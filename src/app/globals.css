@@ -5,44 +5,42 @@
 @tailwind utilities;
 
 /* ============================================
-   DESIGN TOKENS — Hyper-Modern
+   DESIGN TOKENS — Academic Modern
    ============================================ */
 :root {
-  /* Deep Space */
-  --navy:          #05050a;
-  --navy-mid:      #0a0a14;
-  --navy-light:    #121220;
-  
-  /* Electric Indigo */
-  --blue:          #6F1EFE;
-  --blue-bright:   #8A4FFF;
-  --blue-glow:     rgba(111, 30, 254, 0.4);
+  /* Primary Palette */
+  --navy:          #0a1628;
+  --navy-mid:      #0f2347;
+  --navy-light:    #1a3a6b;
+  --blue:          #1e5fcc;
+  --blue-bright:   #2d7aff;
+  --blue-glow:     rgba(45, 122, 255, 0.3);
 
-  /* Cyber Lime */
-  --green:         #32FF7E;
-  --green-bright:  #6DFF9F;
-  --green-glow:    rgba(50, 255, 126, 0.3);
+  /* Innovation Green */
+  --green:         #00c896;
+  --green-bright:  #00f5b2;
+  --green-glow:    rgba(0, 200, 150, 0.25);
 
-  /* Sunset Orange / Coral */
-  --gold:          #FF4D4D;
-  --violet:        #6F1EFE;
-  --rose:          #FF4D4D;
+  /* Accent */
+  --gold:          #f5a623;
+  --violet:        #7c3aed;
+  --rose:          #f43f5e;
 
   /* Glassmorphism */
-  --glass-bg:      rgba(255, 255, 255, 0.02);
-  --glass-border:  rgba(255, 255, 255, 0.06);
-  --glass-hover:   rgba(255, 255, 255, 0.05);
-  --blur:          blur(32px);
+  --glass-bg:      rgba(255, 255, 255, 0.05);
+  --glass-border:  rgba(255, 255, 255, 0.10);
+  --glass-hover:   rgba(255, 255, 255, 0.08);
+  --blur:          blur(20px);
 
   /* Text */
-  --text-primary:  #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted:    rgba(255, 255, 255, 0.4);
+  --text-primary:  #f0f4ff;
+  --text-secondary: rgba(240, 244, 255, 0.65);
+  --text-muted:    rgba(240, 244, 255, 0.40);
 
   /* Shadows */
-  --shadow-blue:   0 8px 32px rgba(111, 30, 254, 0.3);
-  --shadow-green:  0 8px 32px rgba(50, 255, 126, 0.3);
-  --shadow-card:   0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-blue:   0 8px 32px rgba(45, 122, 255, 0.2);
+  --shadow-green:  0 8px 32px rgba(0, 200, 150, 0.2);
+  --shadow-card:   0 4px 24px rgba(0, 0, 0, 0.35);
 }
 
 /* ============================================
@@ -123,7 +121,7 @@ body {
 }
 
 /* ============================================
-   BUTTONS & ELASTIC EFFECTS
+   BUTTONS
    ============================================ */
 .btn-primary {
   display: inline-flex;
@@ -133,20 +131,20 @@ body {
   padding: 12px 28px;
   background: linear-gradient(135deg, var(--blue) 0%, var(--blue-bright) 100%);
   color: white;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6), box-shadow 0.3s ease, background 0.3s ease;
+  transition: all 0.3s ease;
   box-shadow: var(--shadow-blue);
   letter-spacing: 0.02em;
 }
 .btn-primary:hover {
-  transform: scale(1.05) translateX(4px);
-  box-shadow: 0 12px 40px rgba(111, 30, 254, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(45, 122, 255, 0.4);
 }
-.btn-primary:active { transform: scale(0.95); }
+.btn-primary:active { transform: translateY(0); }
 
 .btn-green {
   background: linear-gradient(135deg, var(--green) 0%, var(--green-bright) 100%);
@@ -154,7 +152,7 @@ body {
   color: var(--navy);
 }
 .btn-green:hover {
-  box-shadow: 0 12px 40px rgba(50, 255, 126, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 200, 150, 0.4);
 }
 
 .btn-ghost {
@@ -165,13 +163,12 @@ body {
   border-radius: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6), background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 .btn-ghost:hover {
-  border-color: rgba(50, 255, 126, 0.5);
-  color: var(--green);
-  background: rgba(50, 255, 126, 0.05);
-  transform: scale(1.05) translateX(4px);
+  border-color: rgba(45,122,255,0.4);
+  color: var(--text-primary);
+  background: var(--glass-hover);
 }
 
 /* ============================================
@@ -207,7 +204,7 @@ body {
 }
 
 .gradient-text-green {
-  background: linear-gradient(135deg, var(--green) 0%, var(--blue-bright) 100%);
+  background: linear-gradient(135deg, var(--green-bright) 0%, var(--blue-bright) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

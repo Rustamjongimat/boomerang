@@ -2,233 +2,337 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
-// The new 3D Glowing Kinetic Boomerang SVG
-function KineticBoomerang({ className = "" }: { className?: string }) {
+// Boomerang SVG animation component
+function BoomerangIcon({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 200 200" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="neonGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#32FF7E" />
-          <stop offset="50%" stopColor="#6F1EFE" />
-          <stop offset="100%" stopColor="#FF4D4D" />
-        </linearGradient>
-        <filter id="glowEffect" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="8" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      
-      {/* Outer Glow Path */}
+    <svg
+      viewBox="0 0 100 100"
+      className={className}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
-        d="M20 160 Q80 40 180 40 Q140 100 80 130 Q40 140 20 160Z"
-        fill="url(#neonGlow)"
-        opacity="0.3"
-        filter="url(#glowEffect)"
-      />
-      {/* Core Body */}
-      <path
-        d="M25 155 Q80 45 175 45 Q140 95 85 125 Q45 135 25 155Z"
-        fill="rgba(255,255,255,0.05)"
-        stroke="url(#neonGlow)"
-        strokeWidth="3"
-        style={{ backdropFilter: "blur(10px)" }}
-      />
-      {/* Iridescent Fiber Lines */}
-      <path
-        d="M40 140 Q85 60 160 55"
-        stroke="#32FF7E"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.8"
-      />
-      <path
-        d="M30 150 Q80 50 170 50"
-        stroke="#6F1EFE"
+        d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z"
+        fill="url(#bgrad)"
+        stroke="rgba(255,255,255,0.3)"
         strokeWidth="1.5"
-        strokeLinecap="round"
-        opacity="0.6"
       />
+      <defs>
+        <linearGradient id="bgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2d7aff" />
+          <stop offset="100%" stopColor="#00c896" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 }
 
-// Fluid Liquid Backgrounds
-function LiquidGradients() {
+// Floating particle
+function Particle({ style }: { style: React.CSSProperties }) {
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Electric Indigo Blob */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob" style={{ background: "#6F1EFE" }}></div>
-      {/* Cyber Lime Blob */}
-      <div className="absolute top-[40%] right-[-10%] w-[60vw] h-[60vw] rounded-full mix-blend-screen filter blur-[150px] opacity-20 animate-blob animation-delay-2000" style={{ background: "#32FF7E" }}></div>
-      {/* Sunset Orange Blob */}
-      <div className="absolute bottom-[-20%] left-[20%] w-[40vw] h-[40vw] rounded-full mix-blend-screen filter blur-[120px] opacity-15 animate-blob animation-delay-4000" style={{ background: "#FF4D4D" }}></div>
-    </div>
+    <div
+      className="absolute rounded-full"
+      style={{
+        width: 4,
+        height: 4,
+        background: "rgba(45,122,255,0.4)",
+        ...style,
+      }}
+    />
   );
 }
 
 export default function Home() {
-  const boomerangContainerRef = useRef<HTMLDivElement>(null);
-  const heroTextRef = useRef<HTMLDivElement>(null);
+  const boomerangRef = useRef<HTMLDivElement>(null);
 
-  // Parallax and Mouse Tracking for Boomerang
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!boomerangContainerRef.current) return;
-      
-      const { clientX, clientY } = e;
-      const xPos = (clientX / window.innerWidth - 0.5) * 40; // 40px range
-      const yPos = (clientY / window.innerHeight - 0.5) * 40;
-
-      // 3D Tilt effect
-      boomerangContainerRef.current.style.transform = `translate(-50%, -50%) rotateX(${-yPos}deg) rotateY(${xPos}deg)`;
+    const el = boomerangRef.current;
+    if (!el) return;
+    let t = 0;
+    const loop = () => {
+      t += 0.012;
+      const x = Math.sin(t) * 60;
+      const y = Math.sin(t * 2) * 30;
+      const r = t * 90;
+      el.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg)`;
+      requestAnimationFrame(loop);
     };
-
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      if (heroTextRef.current) {
-        heroTextRef.current.style.transform = `translateY(${scrollY * 0.4}px)`;
-        heroTextRef.current.style.opacity = `${1 - scrollY / 600}`;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("scroll", handleScroll);
-    };
+    const id = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(id);
   }, []);
 
-  return (
-    <main className="relative z-10 min-h-screen bg-[#05050A]">
-      <LiquidGradients />
+  const features = [
+    {
+      icon: "🎯",
+      title: "SMART-Wizard",
+      desc: "5 qadamli interaktiv forma orqali g'oyangizni aniq, o'lchanadigan va vaqt bilan chegaralangan tarzda shakllantiring.",
+      color: "blue",
+    },
+    {
+      icon: "🤖",
+      title: "AI-Tahlil",
+      desc: "Sun'iy intellekt g'oyangizning innovatsionlik darajasini (%) hisoblaydi va konkret tavsiyalar beradi.",
+      color: "green",
+    },
+    {
+      icon: "🌐",
+      title: "P2P Tarmoq",
+      desc: "G'oyangiz boshqa talabalarga 'bumerang' kabi yuboriladi va ular uni boyitadi — u sizga mukammal holda qaytadi.",
+      color: "violet",
+    },
+    {
+      icon: "🏆",
+      title: "Gamification",
+      desc: "XP ballari va Innovator Rank tizimi: Explorer → Specialist → Master → Visionary yo'lida rivojlaning.",
+      color: "gold",
+    },
+  ];
 
-      {/* NAVBAR: Top Right Auth */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-[#05050A]/60 border-b border-white/5 backdrop-blur-[24px]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 anim-spin-slow">
-            <KineticBoomerang className="w-full h-full" />
+  const stats = [
+    { value: "5", label: "SMART mezon", suffix: "" },
+    { value: "4", label: "Innovator darajasi", suffix: "" },
+    { value: "100", label: "Min belgi har qadamda", suffix: "+" },
+    { value: "3", label: "Talab etilgan taklif", suffix: "+" },
+  ];
+
+  return (
+    <main className="relative z-10 min-h-screen">
+      {/* NAVBAR */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-3 md:py-4 glass border-b border-white/5 backdrop-blur-xl">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-8 h-8 md:w-9 md:h-9 anim-spin-slow">
+            <BoomerangIcon className="w-full h-full" />
           </div>
-          <span className="font-outfit font-black text-xl md:text-2xl tracking-tighter text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-            Smart-Boomerang
+          <span className="font-outfit font-800 text-lg md:text-xl gradient-text" style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800 }}>
+            <span className="hidden sm:inline">Smart-Boomerang</span>
+            <span className="sm:hidden">S-Boomerang</span>
           </span>
         </div>
-        
-        {/* Right Auth - ALWAYS TOP RIGHT */}
-        <div className="flex items-center gap-4">
-          <Link href="/auth/login" className="text-sm font-semibold text-white/70 hover:text-[#32FF7E] transition-colors hidden sm:block">
-            Sign In
-          </Link>
-          <Link href="/auth/register" className="btn-elastic px-5 py-2.5 rounded-xl text-sm font-bold text-[#05050A] shadow-[0_0_20px_rgba(50,255,126,0.3)] transition-all duration-500 hover:shadow-[0_0_30px_rgba(50,255,126,0.6)]" style={{ background: "linear-gradient(135deg, #32FF7E 0%, #00C896 100%)" }}>
-            Get Started
-          </Link>
+        <div className="hidden md:flex items-center gap-8">
+          <a href="#features" className="text-sm text-white/60 hover:text-white transition-colors">Imkoniyatlar</a>
+          <a href="#how" className="text-sm text-white/60 hover:text-white transition-colors">Qanday ishlaydi</a>
+          <a href="#stats" className="text-sm text-white/60 hover:text-white transition-colors">Statistika</a>
+        </div>
+        <div className="flex items-center gap-2 md:gap-3">
+          <Link href="/auth/login" className="btn-ghost text-xs md:text-sm py-1.5 md:py-2 px-3 md:px-5 border-transparent hover:border-white/10 hidden sm:block">Kirish</Link>
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2d7aff] to-[#00c896] rounded-xl opacity-50 group-hover:opacity-100 blur transition duration-500 animate-pulse-slow"></div>
+            <Link href="/auth/register" className="relative btn-primary text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 rounded-xl bg-black flex items-center gap-1.5">
+              <span>Ro'yxatdan o'tish</span>
+              <svg className="w-3.5 h-3.5 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </Link>
+          </div>
         </div>
       </nav>
 
-      {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        
-        {/* Central 3D Kinetic Object */}
-        <div 
-          ref={boomerangContainerRef}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] pointer-events-none transition-transform duration-1000 ease-out z-0"
-          style={{ perspective: "1000px" }}
+      {/* HERO */}
+      <section className="min-h-screen flex flex-col items-center justify-center text-center pt-20 px-6 relative overflow-hidden">
+        {/* Animated boomerang */}
+        <div
+          ref={boomerangRef}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 opacity-10 pointer-events-none"
         >
-          <div className="w-full h-full anim-spin-slow">
-             <KineticBoomerang className="w-full h-full opacity-60 mix-blend-screen" />
-          </div>
+          <BoomerangIcon className="w-full h-full" />
         </div>
 
-        {/* Hero Text */}
-        <div ref={heroTextRef} className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
-             <span className="w-2 h-2 rounded-full bg-[#FF4D4D] animate-pulse"></span>
-             <span className="text-xs font-bold tracking-widest text-[#FF4D4D] uppercase">AI-Powered Education</span>
+        {/* Floating particles */}
+        {[
+          { top: "20%", left: "15%", animationDelay: "0s", animationDuration: "3s" },
+          { top: "30%", right: "20%", animationDelay: "1s", animationDuration: "4s" },
+          { top: "70%", left: "25%", animationDelay: "0.5s", animationDuration: "3.5s" },
+          { top: "60%", right: "15%", animationDelay: "2s", animationDuration: "5s" },
+          { top: "15%", left: "60%", animationDelay: "1.5s", animationDuration: "4s" },
+        ].map((p, i) => (
+          <Particle
+            key={i}
+            style={{
+              ...p,
+              animation: `float ${p.animationDuration} ease-in-out infinite`,
+              animationDelay: p.animationDelay,
+            }}
+          />
+        ))}
+
+        {/* Glow orbs */}
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl"
+          style={{ background: "radial-gradient(circle, #2d7aff, transparent)" }} />
+        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full opacity-10 blur-3xl"
+          style={{ background: "radial-gradient(circle, #00c896, transparent)" }} />
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="badge badge-blue mb-6 mx-auto w-fit">
+            <span>🎓</span>
+            <span>Magistrlik dissertatsiyasi platformasi</span>
           </div>
-          
-          <h1 className="font-outfit text-5xl md:text-7xl lg:text-[90px] font-black leading-[1.05] tracking-tighter mb-8">
-            The Future of <br className="hidden md:block"/>
-            <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #6F1EFE, #32FF7E)" }}>
-              Pedagogical Innovation
-            </span>
+
+          <h1 className="heading-xl mb-6">
+            G'oyangizni{" "}
+            <span className="gradient-text">SMART</span> qiling,{" "}
+            <br className="hidden md:block" />
+            <span className="gradient-text-green">Bumerang</span> kabi qaytaring
           </h1>
 
-          <p className="text-lg md:text-2xl text-white/60 max-w-3xl mx-auto mb-12 font-light">
-            Deploy your ideas into the P2P network. AI analyzes, peers refine, and it boomerangs back as a masterpiece.
+          <p className="text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+            Pedagogik innovatsion g'oyangizni kiritng, AI tekshirsin, tarmoqdagi talabalar boyitsin
+            va u sizga mukammal holatda qaytib kelsin.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link href="/auth/register" className="btn-elastic px-8 py-4 rounded-2xl text-lg font-bold text-white shadow-[0_10px_30px_rgba(111,30,254,0.4)]" style={{ background: "linear-gradient(135deg, #6F1EFE 0%, #8A4FFF 100%)" }}>
-              Launch Idea 🚀
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/auth/register" className="btn-primary">
+              <span>🚀</span> Boshlash — Tekin
             </Link>
-            <a href="#bento" className="text-white/60 hover:text-white font-medium transition-colors flex items-center gap-2 group">
-              Explore Network 
-              <span className="transition-transform group-hover:translate-x-2">→</span>
+            <a href="#how" className="btn-ghost">
+              Qanday ishlashini ko'rish →
             </a>
+          </div>
+
+          {/* Mini stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16" id="stats">
+            {stats.map((s) => (
+              <div key={s.label} className="glass rounded-2xl p-5 text-center">
+                <div
+                  className="text-3xl font-bold mb-1"
+                  style={{
+                    fontFamily: "Outfit, sans-serif",
+                    background: "linear-gradient(135deg, #2d7aff, #00c896)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {s.value}{s.suffix}
+                </div>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* BENTO GRID LAYOUT */}
-      <section id="bento" className="py-32 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-16">
-            <h2 className="font-outfit text-4xl md:text-6xl font-black mb-4">Hyper-Modern <span className="text-[#32FF7E]">Workflow</span></h2>
-            <p className="text-xl text-white/50">Engineered for extreme performance and deep analytical insights.</p>
+      {/* FEATURES */}
+      <section id="features" className="py-24 px-6">
+        <div className="page-container">
+          <div className="text-center mb-16">
+            <div className="badge badge-green mb-4 mx-auto w-fit">Asosiy imkoniyatlar</div>
+            <h2 className="heading-lg gradient-text">Nima uchun Smart-Boomerang?</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[300px]">
-            
-            {/* Bento Card 1: Large Area */}
-            <div className="md:col-span-2 md:row-span-2 rounded-[32px] p-10 border border-white/5 bg-white/[0.02] backdrop-blur-3xl relative overflow-hidden group hover:border-[#6F1EFE]/30 transition-colors duration-500">
-              <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#6F1EFE] rounded-full mix-blend-screen filter blur-[100px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-              <div className="w-16 h-16 rounded-2xl bg-[#6F1EFE]/20 flex items-center justify-center text-3xl mb-8 border border-[#6F1EFE]/30">🧠</div>
-              <h3 className="font-outfit text-4xl font-bold mb-4">SMART-Wizard Engine</h3>
-              <p className="text-white/60 text-lg leading-relaxed max-w-md">
-                A highly interactive 5-step wizard that forces you to structure your pedagogical concepts using strict SMART criteria. No more vague ideas—only precise, measurable goals.
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className={`glass glass-hover rounded-2xl p-6 ${
+                  f.color === "blue" ? "glass-blue" :
+                  f.color === "green" ? "glass-green" : ""
+                }`}
+              >
+                <div className="text-4xl mb-4">{f.icon}</div>
+                <h3 className="heading-md mb-3">{f.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                  {f.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section id="how" className="py-24 px-6">
+        <div className="page-container">
+          <div className="text-center mb-16">
+            <div className="badge badge-violet mb-4 mx-auto w-fit">Jarayon</div>
+            <h2 className="heading-lg">Qanday ishlaydi?</h2>
+          </div>
+
+          <div className="relative">
+            {/* Connecting line */}
+            <div className="hidden md:block absolute top-12 left-1/4 right-1/4 h-0.5"
+              style={{ background: "linear-gradient(90deg, transparent, #2d7aff, #00c896, transparent)" }} />
+
+            <div className="grid md:grid-cols-4 gap-8">
+              {[
+                { step: "01", icon: "✍️", title: "G'oya kiriting", desc: "SMART-Wizard orqali innovatsion g'oyangizni 5 qadamda shakllantiring" },
+                { step: "02", icon: "🤖", title: "AI tekshiradi", desc: "Sun'iy intellekt g'oyangizni tahlil qilib, innovatsionlik darajasini aniqlaydi" },
+                { step: "03", icon: "🌐", title: "Tarmoqqa yuboriladi", desc: "G'oya kamida 3 ta talabaga 'bumerang' kabi uchirib yuboriladi" },
+                { step: "04", icon: "💎", title: "Boyitib qaytadi", desc: "Hamkasblar taklif beradi, AI jamlab, sizga mukammal g'oya qaytaradi" },
+              ].map((item) => (
+                <div key={item.step} className="glass rounded-2xl p-6 text-center relative glass-hover">
+                  <div
+                    className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{ background: "linear-gradient(135deg, #2d7aff, #00c896)", color: "white" }}
+                  >
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4 mt-2">{item.icon}</div>
+                  <h3 className="font-bold text-base mb-2">{item.title}</h3>
+                  <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* RANK SYSTEM */}
+      <section className="py-24 px-6">
+        <div className="page-container">
+          <div className="text-center mb-16">
+            <div className="badge badge-gold mb-4 mx-auto w-fit">🏆 Gamification</div>
+            <h2 className="heading-lg">Innovator Rank tizimi</h2>
+            <p className="mt-3 text-base" style={{ color: "var(--text-secondary)" }}>
+              XP ballar to'plab, yangi darajalarga o'ting
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { rank: "Explorer", icon: "🌱", xp: "0–99 XP", desc: "Platformaga yangi qo'shilganlar uchun", color: "rank-bg-explorer rank-explorer", badge: "badge-green" },
+              { rank: "Specialist", icon: "⚡", xp: "100–299 XP", desc: "Faol ishtirokchilar uchun", color: "rank-bg-specialist rank-specialist", badge: "badge-blue" },
+              { rank: "Master", icon: "🔮", xp: "300–699 XP", desc: "Tajribali innovatorlar uchun", color: "rank-bg-master rank-master", badge: "badge-violet" },
+              { rank: "Visionary", icon: "👑", xp: "700+ XP", desc: "Platforma liderlar uchun", color: "rank-bg-visionary rank-visionary", badge: "badge-gold" },
+            ].map((r) => (
+              <div key={r.rank} className={`glass rounded-2xl p-6 ${r.color} glass-hover`}>
+                <div className="text-5xl mb-4">{r.icon}</div>
+                <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>{r.rank}</h3>
+                <div className={`badge ${r.badge} mb-3 text-xs`}>{r.xp}</div>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{r.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 px-6">
+        <div className="page-container">
+          <div className="glass rounded-3xl p-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10"
+              style={{ background: "radial-gradient(ellipse at center, #2d7aff, transparent)" }} />
+            <div className="relative z-10">
+              <div className="w-20 h-20 mx-auto mb-6 anim-float">
+                <BoomerangIcon className="w-full h-full" />
+              </div>
+              <h2 className="heading-lg mb-4">G'oyangizni hoziroq yuboring!</h2>
+              <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>
+                Magistrlik dissertatsiyangiz uchun innovatsion g'oyangizni Smart-Boomerang bilan boyiting.
               </p>
+              <Link href="/auth/register" className="btn-primary btn-green">
+                🚀 Bepul boshlash
+              </Link>
             </div>
-
-            {/* Bento Card 2: Top Right */}
-            <div className="md:col-span-2 rounded-[32px] p-8 border border-white/5 bg-white/[0.02] backdrop-blur-3xl relative overflow-hidden group hover:border-[#32FF7E]/30 transition-colors duration-500">
-               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#32FF7E] rounded-full mix-blend-screen filter blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-               <div className="flex justify-between items-start mb-4">
-                 <div className="w-12 h-12 rounded-xl bg-[#32FF7E]/20 flex items-center justify-center text-2xl border border-[#32FF7E]/30">🤖</div>
-                 <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#32FF7E] to-transparent opacity-50">AI</div>
-               </div>
-               <h3 className="font-outfit text-2xl font-bold mb-2">Automated Assessment</h3>
-               <p className="text-white/60">Our proprietary AI instantly calculates an Innovation Score (%) and provides deep architectural feedback.</p>
-            </div>
-
-            {/* Bento Card 3: Bottom Middle */}
-            <div className="rounded-[32px] p-8 border border-white/5 bg-white/[0.02] backdrop-blur-3xl relative overflow-hidden group hover:border-[#FF4D4D]/30 transition-colors duration-500">
-               <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-[#FF4D4D]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-               <div className="text-4xl mb-4">🌐</div>
-               <h3 className="font-outfit text-xl font-bold mb-2">P2P Network</h3>
-               <p className="text-white/50 text-sm">Distribute ideas to peers instantly.</p>
-            </div>
-
-            {/* Bento Card 4: Bottom Right */}
-            <div className="rounded-[32px] p-8 border border-white/5 bg-white/[0.02] backdrop-blur-3xl relative overflow-hidden group hover:border-white/20 transition-colors duration-500">
-               <div className="text-4xl mb-4">🏆</div>
-               <h3 className="font-outfit text-xl font-bold mb-2">Gamification</h3>
-               <p className="text-white/50 text-sm">Earn XP, rank up to Visionary, and dominate the leaderboard.</p>
-            </div>
-
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/5 py-12 text-center relative z-10 bg-[#05050A]">
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="w-6 h-6"><KineticBoomerang className="w-full h-full" /></div>
-          <span className="font-outfit font-black tracking-widest text-white/80">SMART BOOMERANG</span>
+      <footer className="border-t py-8 px-6 text-center" style={{ borderColor: "var(--glass-border)" }}>
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <div className="w-6 h-6"><BoomerangIcon className="w-full h-full" /></div>
+          <span className="font-bold" style={{ fontFamily: "Outfit, sans-serif" }}>Smart-Boomerang</span>
         </div>
-        <p className="text-white/30 text-xs font-mono">SYS.VERSION 2.0 // DEEP SPACE EDITION</p>
+        <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+          © 2024 Smart-Boomerang. Magistrlik dissertatsiyasi platformasi.
+        </p>
       </footer>
     </main>
   );
