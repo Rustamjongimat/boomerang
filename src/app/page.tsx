@@ -322,6 +322,52 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ══ THESIS INFO ══ */}
+      <section style={{ background: "#fff", padding: "80px 24px" }} id="about">
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }} ref={useReveal()}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "40px" }}>
+            <div style={{
+              display: "inline-block", background: "var(--bg-dark)", color: "#fff",
+              padding: "6px 16px", borderRadius: "8px", fontSize: "12px", fontWeight: 700,
+              textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "16px"
+            }}>
+              🎓 Magistrlik Dissertatsiyasi
+            </div>
+            <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "2rem", fontWeight: 900, color: "var(--dark)", marginBottom: "16px", letterSpacing: "-0.03em", maxWidth: "800px", lineHeight: 1.3 }}>
+              "Raqamli pedagogik muhitida talabalarni innovatsion faoliyatini rivojlantirish mexanizmini takomillashtirish"
+            </h2>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+            <div style={{ background: "var(--bg-soft)", border: "1px solid var(--border)", borderRadius: "16px", padding: "32px", display: "flex", gap: "20px", alignItems: "center" }}>
+              <div style={{ width: "64px", height: "64px", borderRadius: "16px", background: "#fef0f5", color: "var(--pink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", fontWeight: 800, flexShrink: 0 }}>
+                P
+              </div>
+              <div>
+                <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Muallif</div>
+                <div style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.2rem", fontWeight: 800, color: "var(--dark)" }}>PRIMOVA DURDONA</div>
+                <div style={{ fontSize: "14px", color: "var(--text-light)" }}>G'ulomjon qizi</div>
+              </div>
+            </div>
+
+            <div style={{ background: "var(--bg-soft)", border: "1px solid var(--border)", borderRadius: "16px", padding: "32px", display: "flex", gap: "20px", alignItems: "center" }}>
+              <div style={{ width: "64px", height: "64px", borderRadius: "16px", background: "#e8f0fe", color: "#0d6efd", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", flexShrink: 0 }}>
+                🎓
+              </div>
+              <div>
+                <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Mutaxassislik</div>
+                <div style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "4px" }}>70610105</div>
+                <div style={{ fontSize: "14px", color: "var(--text-light)" }}>"Ta’limda axborot texnologiyalari"</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.6, background: "var(--bg-soft)", border: "1px solid var(--border)", padding: "20px", borderRadius: "16px" }}>
+            Ushbu platforma <strong>70610105 – "Ta’limda axborot texnologiyalari"</strong> mutaxassisligi bo'yicha magistr akademik darajasini olish uchun yozilgan dissertatsiya ishi doirasida ishlab chiqilgan.
+          </div>
+        </div>
+      </section>
+
       {/* ══ CTA ══ */}
       <section className="cta-section">
         <div ref={useReveal()} className="reveal">
@@ -347,7 +393,7 @@ export default function Home() {
             Smart-Boomerang
           </span>
         </div>
-        <p className="footer-copy">© 2024 Smart-Boomerang — Magistrlik Dissertatsiyasi Platformasi</p>
+        <p className="footer-copy">© 2024 Smart-Boomerang — Muallif: Primova Durdona G'ulomjon qizi</p>
         <div style={{ display: "flex", gap: "16px" }}>
           <Link href="/auth/register" className="btn-signup" style={{ fontSize: "13px" }}>Ro'yxatdan o'tish</Link>
           <Link href="/auth/login" className="btn-login" style={{ fontSize: "13px", padding: "8px 16px" }}>Kirish</Link>

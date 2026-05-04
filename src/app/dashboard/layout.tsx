@@ -90,7 +90,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Bottom Area */}
-        <div style={{ padding: "20px 16px", borderTop: "1px solid var(--border)" }}>
+        <div style={{ padding: "20px 16px", borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "16px" }}>
+          
+          {/* Author Attribution */}
+          <div style={{ background: "var(--bg-soft)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: "10px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+              Loyiha Muallifi
+            </div>
+            <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--dark)", marginBottom: "2px" }}>
+              Primova Durdona
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-light)", lineHeight: 1.4 }}>
+              70610105 – "Ta’limda axborot texnologiyalari" magistranti
+            </div>
+          </div>
+
           <button
             onClick={handleLogout}
             style={{
