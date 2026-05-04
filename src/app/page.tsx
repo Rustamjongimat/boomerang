@@ -98,12 +98,12 @@ export default function Home() {
   return (
     <main className="relative z-10 min-h-screen">
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-3 md:py-4 glass border-b border-white/5 backdrop-blur-xl">
-        <div className="flex items-center gap-2 md:gap-3">
-          <div className="w-8 h-8 md:w-9 md:h-9 anim-spin-slow">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 glass border-b border-white/5">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-7 h-7 sm:w-9 sm:h-9 anim-spin-slow">
             <BoomerangIcon className="w-full h-full" />
           </div>
-          <span className="font-outfit font-800 text-lg md:text-xl gradient-text" style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800 }}>
+          <span className="font-outfit font-800 text-base sm:text-xl gradient-text" style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800 }}>
             <span className="hidden sm:inline">Smart-Boomerang</span>
             <span className="sm:hidden">S-Boomerang</span>
           </span>
@@ -113,15 +113,9 @@ export default function Home() {
           <a href="#how" className="text-sm text-white/60 hover:text-white transition-colors">Qanday ishlaydi</a>
           <a href="#stats" className="text-sm text-white/60 hover:text-white transition-colors">Statistika</a>
         </div>
-        <div className="flex items-center gap-2 md:gap-3">
-          <Link href="/auth/login" className="btn-ghost text-xs md:text-sm py-1.5 md:py-2 px-3 md:px-5 border-transparent hover:border-white/10 hidden sm:block">Kirish</Link>
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2d7aff] to-[#00c896] rounded-xl opacity-50 group-hover:opacity-100 blur transition duration-500 animate-pulse-slow"></div>
-            <Link href="/auth/register" className="relative btn-primary text-xs md:text-sm py-1.5 md:py-2 px-4 md:px-5 rounded-xl bg-black flex items-center gap-1.5">
-              <span>Ro'yxatdan o'tish</span>
-              <svg className="w-3.5 h-3.5 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </Link>
-          </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link href="/auth/login" className="btn-ghost text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-5">Kirish</Link>
+          <Link href="/auth/register" className="btn-primary text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-5">Ro'yxatdan o'tish</Link>
         </div>
       </nav>
 
