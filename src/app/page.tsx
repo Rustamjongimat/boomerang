@@ -152,14 +152,17 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* ✅ AUTH — strictly top right */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <Link href="/auth/login" className="btn-ghost-nav hidden sm:flex">Kirish</Link>
+          {/* ✅ AUTH — strictly top right, always visible */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
             <Link href="/auth/login"
-              className="sm:hidden text-sm font-semibold px-4 py-2 rounded-full border"
-              style={{ borderColor: "var(--border)", color: "var(--text-base)" }}>Kirish</Link>
-            <Link href="/auth/register" className="btn-primary" style={{ padding: "10px 20px", fontSize: "13px" }}>
-              Ro'yxatdan o'tish
+              className="text-sm font-semibold px-4 py-2 rounded-full transition-colors hover:bg-gray-100"
+              style={{ color: "var(--text-base)" }}>
+              Kirish
+            </Link>
+            <Link href="/auth/register" className="btn-primary"
+              style={{ padding: "9px 16px", fontSize: "13px", borderRadius: "50px" }}>
+              <span className="hidden sm:inline">Ro'yxatdan o'tish</span>
+              <span className="sm:hidden">Kirish ➔</span>
             </Link>
           </div>
         </div>
