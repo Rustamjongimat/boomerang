@@ -2,12 +2,11 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-/* ─── Boomerang SVG (dark for light bg) ─── */
-function BoomerangIcon({ className = "", id = "bg0" }: { className?: string; id?: string }) {
+/* ─── Boomerang SVG ─── */
+function BoomerangIcon({ w = 36, h = 36, id = "b0" }: { w?: number; h?: number; id?: string }) {
   return (
-    <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z"
-        fill={`url(#${id})`} stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
+    <svg width={w} height={h} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill={`url(#${id})`} />
       <defs>
         <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#ea4c89" />
@@ -19,49 +18,56 @@ function BoomerangIcon({ className = "", id = "bg0" }: { className?: string; id?
 }
 
 /* ─── Scroll reveal ─── */
-function useReveal() {
+function useReveal(delay = 0) {
   const ref = useRef<HTMLDivElement>(null);
-  const [v, setV] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setV(true); obs.disconnect(); } }, { threshold: 0.12 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return { ref, v };
-}
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const { ref, v } = useReveal();
-  return (
-    <div ref={ref} className={className} style={{
-      opacity: v ? 1 : 0, transform: v ? "translateY(0)" : "translateY(32px)",
-      transition: `opacity 0.75s ease ${delay}s, transform 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s`,
-    }}>{children}</div>
-  );
+    const timer = setTimeout(() => {
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { el.classList.add("visible"); obs.disconnect(); }
+      }, { threshold: 0.1 });
+      obs.observe(el);
+      return () => obs.disconnect();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+  return ref;
 }
 
-/* ─── Shot / Feature Card (Dribbble style) ─── */
-function ShotCard({ icon, title, desc, bg, iconBg, badge, badgeColor }: {
-  icon: string; title: string; desc: string;
-  bg: string; iconBg: string; badge: string; badgeColor: string;
+/* ─── Shot Card (Dribbble style) ─── */
+function ShotCard({ icon, title, desc, bg, user, userColor, likes, views, delay = 0 }: {
+  icon: string; title: string; desc: string; bg: string;
+  user: string; userColor: string; likes: string; views: string; delay?: number;
 }) {
+  const ref = useReveal(delay);
   return (
-    <div className="shot-card group flex flex-col overflow-hidden cursor-pointer">
+    <div ref={ref} className="reveal shot-card">
       {/* Thumbnail */}
-      <div className="shot-card-thumb relative" style={{ background: bg }}>
-        <span className="text-5xl">{icon}</span>
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <span className="text-white text-sm font-bold tracking-wider uppercase">Ko'rish ↗</span>
+      <div className="shot-thumb">
+        <div className="shot-thumb-bg" style={{ background: bg }}>{icon}</div>
+        {/* Overlay */}
+        <div className="shot-overlay">
+          <div className="shot-overlay-title">{title}</div>
+          <div className="shot-overlay-actions">
+            <button className="shot-action-btn pink">Boshlash ↗</button>
+            <button className="shot-action-btn">
+              <span>♥</span>
+            </button>
+          </div>
         </div>
       </div>
-      {/* Info */}
-      <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-center justify-between mb-3">
-          <span className={`badge badge-${badgeColor} text-[10px]`}>{badge}</span>
+      {/* Details */}
+      <div className="shot-details">
+        <div className="shot-user">
+          <div className="shot-avatar" style={{ background: userColor }}>
+            {user[0]}
+          </div>
+          <span className="shot-username">{user}</span>
         </div>
-        <h3 className="heading-md text-[15px] mb-2 leading-snug">{title}</h3>
-        <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--text-muted)" }}>{desc}</p>
+        <div className="shot-stats">
+          <span className="shot-stat">♥ {likes}</span>
+          <span className="shot-stat">👁 {views}</span>
+        </div>
       </div>
     </div>
   );
@@ -70,21 +76,18 @@ function ShotCard({ icon, title, desc, bg, iconBg, badge, badgeColor }: {
 export default function Home() {
   const boomerangRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [activeType, setActiveType] = useState("g'oyalar");
+  const [activeFilter, setActiveFilter] = useState("discover");
 
   useEffect(() => { setTimeout(() => setMounted(true), 100); }, []);
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 48);
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
 
+  // Floating boomerang animation
   useEffect(() => {
     const el = boomerangRef.current; if (!el) return;
     let t = 0;
     const loop = () => {
       t += 0.008;
-      el.style.transform = `translate(${Math.sin(t) * 18}px, ${Math.sin(t * 1.7) * 12}px) rotate(${t * 60}deg)`;
+      el.style.transform = `translate(${Math.sin(t) * 14}px, ${Math.sin(t * 1.6) * 10}px) rotate(${t * 55}deg)`;
       requestAnimationFrame(loop);
     };
     const id = requestAnimationFrame(loop);
@@ -92,321 +95,264 @@ export default function Home() {
   }, []);
 
   const shots = [
-    { icon: "🎯", title: "SMART-Wizard", desc: "5 qadamli interaktiv forma orqali g'oyangizni shakllantiring.", bg: "linear-gradient(135deg,#fce4ec,#f8bbd0)", iconBg: "#fce4ec", badge: "S·M·A·R·T", badgeColor: "pink" },
-    { icon: "🤖", title: "AI-Tahlil", desc: "Sun'iy intellekt innovatsionlik darajasini (%) aniqlab beradi.", bg: "linear-gradient(135deg,#e8f0fe,#c3d8ff)", iconBg: "#e8f0fe", badge: "AI Powered", badgeColor: "blue" },
-    { icon: "🌐", title: "P2P Tarmoq", desc: "G'oyangiz boshqalarga 'bumerang' kabi uchib, boyitib qaytadi.", bg: "linear-gradient(135deg,#e6f8f3,#b6eee0)", iconBg: "#e6f8f3", badge: "Peer Network", badgeColor: "green" },
-    { icon: "🏆", title: "Gamification", desc: "XP ballar yig'ib, Explorer'dan Visionary'ga yuksaling.", bg: "linear-gradient(135deg,#ede9fe,#ddd6fe)", iconBg: "#ede9fe", badge: "XP + Rank", badgeColor: "violet" },
-    { icon: "💎", title: "G'oya Boyitish", desc: "Hamkasblar fikr bildiradi, AI jamlaydi — yaxlit natija chiqadi.", bg: "linear-gradient(135deg,#fef9ee,#fde68a)", iconBg: "#fef9ee", badge: "Collaborative", badgeColor: "gold" },
-    { icon: "📊", title: "Admin Panel", desc: "Loyihalar statistikasi va innovatsiya tahlilini kuzatib boring.", bg: "linear-gradient(135deg,#fce4ec,#ede9fe)", iconBg: "#fce4ec", badge: "Analytics", badgeColor: "pink" },
+    { icon: "🎯", title: "SMART-Wizard — 5 qadamli g'oya shakllantirish", desc: "Innovatsion g'oyangizni SMART mezonlari bo'yicha shakllantiring", bg: "linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%)", user: "SMART modul", userColor: "#ea4c89", likes: "2.4k", views: "18.2k" },
+    { icon: "🤖", title: "AI-Tahlil — Innovatsionlik darajasi", desc: "Sun'iy intellekt g'oyangizni tekshirib, foizda baholaydi", bg: "linear-gradient(135deg, #e8f0fe 0%, #c3d8ff 100%)", user: "AI Engine", userColor: "#0d6efd", likes: "1.8k", views: "14.5k" },
+    { icon: "🌐", title: "P2P Tarmoq — Bumerang effekti", desc: "G'oyangiz 3+ hamkasbga uchirib, boyitib qaytadi", bg: "linear-gradient(135deg, #e6f8f3 0%, #b6eee0 100%)", user: "Peer Network", userColor: "#00b37e", likes: "3.1k", views: "21.0k" },
+    { icon: "🏆", title: "Gamification — XP va Rank tizimi", desc: "Faollik uchun XP ballar to'plab, yangi darajaga yuksaling", bg: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", user: "Rank System", userColor: "#7c3aed", likes: "1.2k", views: "9.8k" },
+    { icon: "💎", title: "G'oya Boyitish — Kollektiv aql", desc: "Hamkasblar taklif beradi, AI jamlab, natija qaytaradi", bg: "linear-gradient(135deg, #fef9ee 0%, #fde68a 100%)", user: "Collab AI", userColor: "#d97706", likes: "876", views: "7.3k" },
+    { icon: "📊", title: "Admin Panel — Real-time statistika", desc: "Loyihalar va innovatsiya tahlilini kuzatib boring", bg: "linear-gradient(135deg, #fce4ec 0%, #ede9fe 100%)", user: "Analytics", userColor: "#ea4c89", likes: "654", views: "5.9k" },
   ];
 
-  const steps = [
-    { n: "01", icon: "✍️", title: "G'oya kiriting",      desc: "SMART-Wizard orqali innovatsion g'oyangizni 5 qadamda shakllantiring", c: "pink" },
-    { n: "02", icon: "🤖", title: "AI tekshiradi",       desc: "Sun'iy intellekt tahlil qilib, innovatsionlik darajasini aniqlaydi", c: "blue" },
-    { n: "03", icon: "🌐", title: "Tarmoqqa yuboriladi", desc: "G'oya kamida 3 ta talabaga 'bumerang' kabi uchirib yuboriladi", c: "green" },
-    { n: "04", icon: "💎", title: "Boyitib qaytadi",     desc: "Hamkasblar taklif beradi, AI jamlab, mukammal g'oya qaytaradi", c: "violet" },
+  const types = ["g'oyalar", "innovatorlar", "loyihalar"];
+  const filters = [
+    { id: "discover", label: "Hammasi" },
+    { id: "smart", label: "SMART tizimi" },
+    { id: "ai", label: "AI tahlil" },
+    { id: "p2p", label: "P2P tarmoq" },
+    { id: "gamification", label: "Gamification" },
+    { id: "analytics", label: "Analitika" },
   ];
 
   const ranks = [
-    { rank: "Explorer",   icon: "🌱", xp: "0–99 XP",    desc: "Platformaga yangi qo'shilganlar uchun", b: "badge-green",  bg: "rank-bg-explorer  rank-explorer" },
-    { rank: "Specialist", icon: "⚡", xp: "100–299 XP", desc: "Faol ishtirokchilar uchun",             b: "badge-blue",   bg: "rank-bg-specialist rank-specialist" },
-    { rank: "Master",     icon: "🔮", xp: "300–699 XP", desc: "Tajribali innovatorlar uchun",          b: "badge-violet", bg: "rank-bg-master rank-master" },
-    { rank: "Visionary",  icon: "👑", xp: "700+ XP",    desc: "Platforma liderlari uchun",             b: "badge-gold",   bg: "rank-bg-visionary rank-visionary" },
+    { id: "rank-explorer",   icon: "🌱", name: "Explorer",   xp: "0–99 XP",    desc: "Platforma yangi a'zolari uchun boshlang'ich daraja" },
+    { id: "rank-specialist", icon: "⚡", name: "Specialist", xp: "100–299 XP", desc: "Faol ishtirokchilar va tajribali g'oya mualliflari" },
+    { id: "rank-master",     icon: "🔮", name: "Master",     xp: "300–699 XP", desc: "Tajribali innovatorlar va mentor foydalanuvchilar" },
+    { id: "rank-visionary",  icon: "👑", name: "Visionary",  xp: "700+ XP",    desc: "Platforma liderlari va eng faol innovatorlar" },
   ];
 
-  const stepColors: Record<string, string> = {
-    pink: "var(--pink)", blue: "var(--blue)", green: "var(--green)", violet: "var(--violet)",
+  const placeholders: Record<string, string> = {
+    "g'oyalar":     "Qaysi sohadagi g'oyani qidiryapsiz?",
+    "innovatorlar": "Qaysi mutaxassisni qidiryapsiz?",
+    "loyihalar":    "Qaysi loyiha turini qidiryapsiz?",
   };
 
   return (
-    <div style={{ background: "var(--bg-base)", minHeight: "100vh" }}>
+    <>
+      {/* ══ ANNOUNCEMENT BAR ══ */}
+      <div className="announce-bar">
+        <span>🚀 Magistrlik dissertatsiyasi uchun eng zamonaviy platforma — Smart-Boomerang ishga tushdi!</span>
+        <a href="/auth/register">Boshlash ↗</a>
+      </div>
 
-      {/* ══════════════════════════════════════
-          NAVBAR — Dribbble style, auth TOP RIGHT
-          ══════════════════════════════════════ */}
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{
-          background: scrolled ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.8)",
-          backdropFilter: "blur(20px)",
-          borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
-          boxShadow: scrolled ? "0 2px 20px rgba(0,0,0,0.07)" : "none",
-          padding: "14px 0",
-        }}>
-        <div className="page-container flex items-center justify-between gap-4">
-
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-8 h-8 anim-spin-slow">
-              <BoomerangIcon className="w-full h-full" id="nav-b" />
-            </div>
-            <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1.15rem", color: "var(--text-dark)" }}
-              className="hidden sm:block tracking-tight">Smart-Boomerang</span>
-            <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1rem", color: "var(--text-dark)" }}
-              className="sm:hidden tracking-tight">S-Bumerang</span>
-          </Link>
-
-          {/* Center nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {[["#shots","Imkoniyatlar"],["#how","Jarayon"],["#ranks","Rank tizimi"]].map(([href, label]) => (
-              <a key={href} href={href} className="btn-ghost-nav">{label}</a>
-            ))}
-          </nav>
-
-          {/* ✅ AUTH — strictly top right, always visible */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
-            <Link href="/auth/login"
-              className="text-sm font-semibold px-4 py-2 rounded-full transition-colors hover:bg-gray-100"
-              style={{ color: "var(--text-base)" }}>
-              Kirish
-            </Link>
-            <Link href="/auth/register" className="btn-primary"
-              style={{ padding: "9px 16px", fontSize: "13px", borderRadius: "50px" }}>
-              <span className="hidden sm:inline">Ro'yxatdan o'tish</span>
-              <span className="sm:hidden">Kirish ➔</span>
-            </Link>
+      {/* ══ NAVBAR — AUTH TOP RIGHT ══ */}
+      <header className="site-nav">
+        {/* Logo */}
+        <Link href="/" className="nav-logo">
+          <div className="nav-logo-icon anim-spin">
+            <BoomerangIcon w={36} h={36} id="nav-b" />
           </div>
+          <span className="nav-logo-text" style={{ display: "none" }} id="logo-text">Smart-Boomerang</span>
+          <style>{`@media(min-width:640px){#logo-text{display:block}}`}</style>
+        </Link>
+
+        {/* Search */}
+        <div className="nav-search">
+          <span className="nav-search-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+            </svg>
+          </span>
+          <input type="text" placeholder="Qidirish..." />
+        </div>
+
+        {/* Nav links */}
+        <nav className="nav-links">
+          <a href="#shots" className="nav-link">Imkoniyatlar</a>
+          <a href="#how" className="nav-link">Jarayon</a>
+          <a href="#ranks" className="nav-link">Rank tizimi</a>
+        </nav>
+
+        {/* ✅ AUTH — always top right */}
+        <div className="nav-actions">
+          <Link href="/auth/register" className="btn-signup">
+            Ro'yxatdan o'tish
+          </Link>
+          <Link href="/auth/login" className="btn-login">
+            Kirish
+          </Link>
         </div>
       </header>
 
-      {/* ══════════════════════════════════════
-          HERO — Dribbble large hero
-          ══════════════════════════════════════ */}
-      <section className="relative pt-36 pb-20 px-5 overflow-hidden">
-        {/* Decorative pink blob (top right) */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none"
-          style={{
-            background: "radial-gradient(circle at 80% 20%, rgba(234,76,137,0.10) 0%, transparent 65%)",
-          }} />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] pointer-events-none"
-          style={{
-            background: "radial-gradient(circle at 20% 80%, rgba(13,110,253,0.07) 0%, transparent 65%)",
-          }} />
-
-        <div className="page-container flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
-
-          {/* Left: Text */}
-          <div className="flex-1 text-left"
-            style={{
-              opacity: mounted ? 1 : 0, transform: mounted ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.9s ease 0.1s, transform 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s",
-            }}>
-            <div className="badge badge-pink mb-6">🎓 Magistrlik dissertatsiyasi platformasi</div>
-
-            <h1 className="heading-hero mb-6">
-              G'oyangizni{" "}
-              <span className="gradient-text">SMART</span>{" "}
-              qiling
+      {/* ══ HERO ══ */}
+      <section>
+        <div className="home-hero">
+          {/* Left */}
+          <div style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s",
+          }}>
+            <h1 className="hero-heading">
+              O'zbekistoning eng<br />
+              yaxshi innovatorlarini<br />
+              kashf eting
             </h1>
-            <p className="text-lg leading-relaxed mb-8 max-w-xl" style={{ color: "var(--text-muted)" }}>
-              Pedagogik innovatsion g'oyangizni kiriting, AI tekshirsin, hamkasblar boyitsin —
-              va u sizga mukammal holatda <strong style={{ color: "var(--text-base)" }}>bumerang</strong> kabi qaytib kelsin.
+            <p className="hero-sub">
+              Magistrlik dissertatsiyasi uchun innovatsion g'oyangizni SMART mezonlari
+              bo'yicha shakllantiring, AI tekshirsin, hamkasblar boyitsin.
             </p>
 
-            <div className="flex flex-wrap gap-4 items-center mb-10">
-              <Link href="/auth/register" className="btn-primary">
-                🚀 Bepul boshlash
-              </Link>
-              <a href="#shots" className="btn-secondary">
-                Imkoniyatlarni ko'rish →
-              </a>
+            {/* Type pills */}
+            <div className="search-types">
+              {types.map((t) => (
+                <button key={t} className={`type-pill${activeType === t ? " active" : ""}`}
+                  onClick={() => setActiveType(t)}>
+                  {t === "g'oyalar" ? "💡" : t === "innovatorlar" ? "👤" : "📁"} {t}
+                </button>
+              ))}
             </div>
 
-            {/* Pill tags */}
-            <div className="flex flex-wrap gap-2">
-              {["SMART mezonlari","AI tahlil","P2P tarmoq","Gamification"].map((tag) => (
-                <span key={tag} className="pill-tag">{tag}</span>
+            {/* Search */}
+            <div className="hero-search">
+              <input type="text" placeholder={placeholders[activeType]} />
+              <button className="hero-search-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Trending */}
+            <div className="trending">
+              <span className="trending-label">Mashhur:</span>
+              {["SMART mezon","AI tahlil","P2P tarmoq","XP tizimi","Innovatsiya"].map((tag) => (
+                <a key={tag} href="#shots" className="trend-tag">{tag}</a>
               ))}
             </div>
           </div>
 
-          {/* Right: Animated boomerang + decorative elements */}
-          <div className="flex-1 flex items-center justify-center relative min-h-[320px]"
-            style={{
-              opacity: mounted ? 1 : 0,
-              transition: "opacity 1s ease 0.3s",
-            }}>
-            {/* Background circles */}
-            <div className="absolute w-80 h-80 rounded-full border-2 anim-ping-slow"
-              style={{ borderColor: "rgba(234,76,137,0.12)" }} />
-            <div className="absolute w-60 h-60 rounded-full border anim-ping-slow"
-              style={{ borderColor: "rgba(234,76,137,0.18)", animationDelay: "1s" }} />
-
-            {/* Central boomerang */}
-            <div ref={boomerangRef} className="relative z-10 w-48 h-48 drop-shadow-2xl">
-              <BoomerangIcon className="w-full h-full" id="hero-b" />
+          {/* Right — media */}
+          <div className="hero-media" style={{
+            opacity: mounted ? 1 : 0,
+            transition: "opacity 1.1s ease 0.3s",
+          }}>
+            <div className="hero-media-inner" ref={boomerangRef}>
+              <BoomerangIcon w={180} h={180} id="hero-b" />
             </div>
-
-            {/* Floating stat bubbles */}
-            {[
-              { label: "SMART", value: "5", unit: "mezon", x: "75%", y: "15%", bg: "#fce4ec", tc: "var(--pink)" },
-              { label: "AI Score", value: "94", unit: "%",    x: "-5%", y: "20%", bg: "#e8f0fe", tc: "var(--blue)" },
-              { label: "XP",      value: "700",unit: "+",    x: "65%", y: "70%", bg: "#ede9fe", tc: "var(--violet)" },
-            ].map((b) => (
-              <div key={b.label}
-                className="absolute rounded-2xl px-4 py-3 text-center shadow-md anim-float"
-                style={{ left: b.x, top: b.y, background: b.bg, border: "1px solid rgba(0,0,0,0.06)", minWidth: "80px" }}>
-                <div className="text-xs font-semibold mb-0.5" style={{ color: "var(--text-muted)" }}>{b.label}</div>
-                <div className="font-black text-xl leading-none" style={{ color: b.tc, fontFamily: "Outfit" }}>
-                  {b.value}<span className="text-sm font-bold">{b.unit}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Stat row */}
-        <div className="page-container mt-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { v: "5",   l: "SMART Mezon",           a: "pink" },
-              { v: "4",   l: "Innovator darajasi",    a: "blue" },
-              { v: "100+",l: "Min belgi har qadamda", a: "green" },
-              { v: "3+",  l: "Talab etilgan taklif",  a: "violet" },
-            ].map((s, i) => (
-              <div key={i} className="card p-6 text-center"
-                style={{
-                  opacity: mounted ? 1 : 0,
-                  transform: mounted ? "translateY(0)" : "translateY(16px)",
-                  transition: `opacity 0.7s ease ${0.5 + i * 0.08}s, transform 0.7s ease ${0.5 + i * 0.08}s`,
-                }}>
-                <div className="stat-number" style={{ color: `var(--${s.a})` }}>{s.v}</div>
-                <div className="text-xs font-semibold uppercase tracking-widest mt-1" style={{ color: "var(--text-muted)" }}>{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          SHOT GRID (Dribbble-style showcase)
-          ══════════════════════════════════════ */}
-      <section id="shots" className="py-24 px-5">
-        <div className="page-container">
-          <Reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
-            <div>
-              <div className="badge badge-pink mb-4">Platforma imkoniyatlari</div>
-              <h2 className="heading-xl">Nima uchun Smart-Boomerang?</h2>
+            <div className="hero-media-badge">
+              <div className="hero-media-badge-avatar">AI</div>
+              <span>94% innovatsionlik darajasi</span>
             </div>
-            <Link href="/auth/register" className="btn-secondary shrink-0">
-              Barcha imkoniyatlar →
-            </Link>
-          </Reveal>
-
-          {/* 3-col grid, Dribbble style */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {shots.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.07}>
-                <ShotCard {...s} />
-              </Reveal>
-            ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          HOW IT WORKS — numbered steps
-          ══════════════════════════════════════ */}
-      <section id="how" className="py-24 px-5" style={{ background: "var(--bg-white)" }}>
-        <div className="page-container">
-          <Reveal className="text-center mb-16">
-            <div className="badge badge-blue mb-4 mx-auto w-fit">Jarayon</div>
-            <h2 className="heading-xl">Qanday ishlaydi?</h2>
-            <p className="mt-4 text-base max-w-lg mx-auto" style={{ color: "var(--text-muted)" }}>
-              To'rtta oddiy qadam bilan g'oyangizni world-class innovatsiyaga aylantiring.
-            </p>
-          </Reveal>
+      {/* ══ PROJECT BRIEF BANNER ══ */}
+      <div className="brief-banner">
+        <p className="brief-banner-text">
+          ✨ <strong>G'oya briefini boshlang</strong> — Nima kerakligini ayting va AI darhol eng mos
+          innovatsion yechimlarni tavsiya qilsin.
+        </p>
+        <Link href="/auth/register" className="brief-banner-cta">
+          🚀 G'oya Briefini Boshlash
+        </Link>
+      </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((s, i) => (
-              <Reveal key={s.n} delay={i * 0.1}>
-                <div className="card p-7 h-full flex flex-col" style={{ [`card-${s.c}` as string]: "" }}>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shadow"
-                      style={{ background: stepColors[s.c] }}>
-                      {s.n}
-                    </div>
-                    <span className="text-3xl">{s.icon}</span>
-                  </div>
-                  <h3 className="heading-md text-[15px] mb-3">{s.title}</h3>
-                  <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
+      {/* ══ FILTER BAR ══ */}
+      <div id="shots" className="filter-bar">
+        {filters.map((f) => (
+          <button key={f.id}
+            className={`filter-cat${activeFilter === f.id ? " active" : ""}`}
+            onClick={() => setActiveFilter(f.id)}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ══ SHOT GRID ══ */}
+      <div className="shots-grid">
+        {shots.map((s, i) => (
+          <ShotCard key={s.title} {...s} delay={i * 60} />
+        ))}
+      </div>
+
+      {/* ══ HOW IT WORKS ══ */}
+      <div id="how">
+        <div className="section-header">
+          <h2 className="section-title">Qanday ishlaydi?</h2>
+          <a href="/auth/register" className="section-link">Barchasini ko'rish →</a>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px", padding: "0 48px 60px", maxWidth: "1400px", margin: "0 auto" }}
+          className="grid-4-col">
+          <style>{`@media(max-width:900px){.grid-4-col{grid-template-columns:repeat(2,1fr)!important;padding:0 24px 40px!important}}@media(max-width:560px){.grid-4-col{grid-template-columns:1fr!important;padding:0 16px 32px!important}}`}</style>
+          {[
+            { n: "01", icon: "✍️", title: "G'oya kiriting", desc: "SMART-Wizard orqali 5 qadamda innovatsion g'oyangizni shakllantiring", c: "#ea4c89" },
+            { n: "02", icon: "🤖", title: "AI tekshiradi", desc: "Sun'iy intellekt innovatsionlik darajasini (%) aniqlab beradi", c: "#0d6efd" },
+            { n: "03", icon: "🌐", title: "Tarmoqqa yuboriladi", desc: "G'oya kamida 3 ta talabaga 'bumerang' kabi uchirib yuboriladi", c: "#00b37e" },
+            { n: "04", icon: "💎", title: "Boyitib qaytadi", desc: "Hamkasblar taklif beradi, AI jamlab, mukammal g'oya qaytaradi", c: "#7c3aed" },
+          ].map((s, i) => {
+            const ref = useReveal(i * 80);
+            return (
+              <div key={s.n} ref={ref} className="reveal rank-card" style={{ borderTop: `3px solid ${s.c}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: "50%",
+                    background: s.c, display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "#fff", fontWeight: 900, fontSize: "13px",
+                  }}>{s.n}</div>
+                  <span style={{ fontSize: "28px" }}>{s.icon}</span>
                 </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          RANK SYSTEM
-          ══════════════════════════════════════ */}
-      <section id="ranks" className="py-24 px-5">
-        <div className="page-container">
-          <Reveal className="text-center mb-16">
-            <div className="badge badge-violet mb-4 mx-auto w-fit">🏆 Gamification</div>
-            <h2 className="heading-xl">Innovator Rank tizimi</h2>
-            <p className="mt-4 text-base max-w-lg mx-auto" style={{ color: "var(--text-muted)" }}>
-              XP ballar to'plab, yangi darajalarga o'ting va liderlarga qo'shiling.
-            </p>
-          </Reveal>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {ranks.map((r, i) => (
-              <Reveal key={r.rank} delay={i * 0.09}>
-                <div className={`card p-7 h-full flex flex-col ${r.bg}`}>
-                  <div className="text-5xl mb-5">{r.icon}</div>
-                  <h3 className="heading-md mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{r.rank}</h3>
-                  <div className={`badge ${r.b} mb-4 w-fit`}>{r.xp}</div>
-                  <p className="text-sm mt-auto" style={{ color: "var(--text-muted)" }}>{r.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          CTA — Dribbble-style big CTA
-          ══════════════════════════════════════ */}
-      <section className="py-24 px-5" style={{ background: "var(--bg-white)" }}>
-        <div className="page-container">
-          <Reveal>
-            <div className="rounded-3xl p-10 sm:p-16 text-center relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg, #fce4ec 0%, #ede9fe 100%)", border: "1px solid #f5c0d6" }}>
-              <div className="absolute top-4 right-8 w-24 h-24 anim-float opacity-40">
-                <BoomerangIcon className="w-full h-full" id="cta-b" />
+                <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: "15px", marginBottom: "8px", color: "var(--dark)" }}>{s.title}</div>
+                <div style={{ fontSize: "13px", color: "var(--text-light)", lineHeight: 1.6 }}>{s.desc}</div>
               </div>
-              <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 mb-6 anim-float">
-                  <BoomerangIcon className="w-full h-full" id="cta-main" />
-                </div>
-                <h2 className="heading-xl mb-4" style={{ maxWidth: 500 }}>G'oyangizni hoziroq yuboring!</h2>
-                <p className="text-base mb-8 max-w-lg mx-auto" style={{ color: "var(--text-muted)" }}>
-                  Magistrlik dissertatsiyangiz uchun innovatsion g'oyangizni Smart-Boomerang bilan mukammal qiling.
-                </p>
-                <Link href="/auth/register" className="btn-primary" style={{ fontSize: "15px", padding: "14px 32px" }}>
-                  🚀 Bepul boshlash
-                </Link>
-              </div>
-            </div>
-          </Reveal>
+            );
+          })}
         </div>
-      </section>
+      </div>
 
-      {/* ══════════════════════════════════════
-          FOOTER
-          ══════════════════════════════════════ */}
-      <footer className="py-10 px-5" style={{ borderTop: "1px solid var(--border)" }}>
-        <div className="page-container flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7"><BoomerangIcon className="w-full h-full" id="footer-b" /></div>
-            <span className="font-black tracking-tight" style={{ fontFamily: "Outfit, sans-serif", color: "var(--text-dark)" }}>Smart-Boomerang</span>
+      {/* ══ RANKS ══ */}
+      <div id="ranks" style={{ background: "var(--bg-soft)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "60px 0" }}>
+        <div className="section-header">
+          <h2 className="section-title">🏆 Innovator Rank tizimi</h2>
+          <a href="/auth/register" className="section-link">Ro'yxatdan o'tish →</a>
+        </div>
+        <div className="ranks-grid">
+          {ranks.map((r, i) => {
+            const ref = useReveal(i * 80);
+            return (
+              <div key={r.id} ref={ref} className={`reveal rank-card ${r.id}`}>
+                <div className="rank-icon">{r.icon}</div>
+                <div className="rank-name">{r.name}</div>
+                <div className="rank-xp">{r.xp}</div>
+                <div className="rank-desc">{r.desc}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ══ CTA ══ */}
+      <section className="cta-section">
+        <div ref={useReveal()} className="reveal">
+          <div style={{ marginBottom: "20px" }}>
+            <BoomerangIcon w={60} h={60} id="cta-b" />
           </div>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            © 2024 Smart-Boomerang — Magistrlik dissertatsiyasi platformasi
+          <h2 className="cta-heading">Innovatsion g'oyangizni hoziroq yuboring</h2>
+          <p className="cta-sub">
+            Magistrlik dissertatsiyangiz uchun eng innovatsion g'oyalarni Smart-Boomerang
+            platformasi bilan mukammal qiling.
           </p>
+          <Link href="/auth/register" className="cta-btn">
+            🚀 Bepul Ro'yxatdan O'tish
+          </Link>
+        </div>
+      </section>
+
+      {/* ══ FOOTER ══ */}
+      <footer className="site-footer">
+        <div className="footer-brand">
+          <BoomerangIcon w={28} h={28} id="footer-b" />
+          <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1rem", color: "var(--dark)" }}>
+            Smart-Boomerang
+          </span>
+        </div>
+        <p className="footer-copy">© 2024 Smart-Boomerang — Magistrlik Dissertatsiyasi Platformasi</p>
+        <div style={{ display: "flex", gap: "16px" }}>
+          <Link href="/auth/register" className="btn-signup" style={{ fontSize: "13px" }}>Ro'yxatdan o'tish</Link>
+          <Link href="/auth/login" className="btn-login" style={{ fontSize: "13px", padding: "8px 16px" }}>Kirish</Link>
         </div>
       </footer>
-
-    </div>
+    </>
   );
 }
