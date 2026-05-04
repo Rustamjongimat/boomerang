@@ -18,6 +18,15 @@ interface Project {
   interactions: Interaction[];
 }
 
+const Card = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div style={{
+    background: "#fff", border: "1px solid var(--border)", borderRadius: "16px",
+    padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", ...style
+  }}>
+    {children}
+  </div>
+);
+
 export default function ProjectDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -28,7 +37,6 @@ export default function ProjectDetailPage() {
   const [currentUserId, setCurrentUserId] = useState<string>("");
 
   useEffect(() => {
-    // Get current user ID from token/session
     fetch("/api/auth/me").then(r => r.json()).then(d => setCurrentUserId(d.id)).catch(() => {});
 
     fetch(`/api/projects/${id}`)
@@ -55,8 +63,16 @@ export default function ProjectDetailPage() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-12 h-12 border-4 border-[#2d7aff] border-t-transparent rounded-full animate-spin" />
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+      <svg width="48" height="48" viewBox="0 0 100 100" fill="none" style={{ animation: "spin 2s linear infinite" }}>
+        <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill="url(#bgl)"/>
+        <defs>
+          <linearGradient id="bgl" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ea4c89"/><stop offset="100%" stopColor="#f77eb5"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 
@@ -68,168 +84,222 @@ export default function ProjectDetailPage() {
   const isCompleted = project.status === "COMPLETED";
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
-      {/* Header & Score */}
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-        <div className="flex-1">
-          <Link href="/dashboard/projects" className="text-xs text-white/50 hover:text-white mb-3 inline-block">
-            ← Loyihalarga qaytish
-          </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <span className={`badge ${isBoomeranged ? "badge-blue" : isInReview ? "badge-gold" : "badge-green"}`}>
-              {isBoomeranged ? "🚀 Tarmoqda aylanmoqda" : isInReview ? "🔍 Ko'rib chiqilmoqda" : "✅ Yakunlangan"}
-            </span>
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-              👁 {project.viewCount} marta ko'rilgan
-            </span>
-          </div>
-          <h1 className="heading-lg mb-4">{project.title}</h1>
+    <div style={{ maxWidth: "1000px", margin: "0 auto", paddingBottom: "40px" }}>
+      {/* ══ HEADER ══ */}
+      <div style={{ marginBottom: "24px" }}>
+        <Link href="/dashboard/projects" style={{
+          fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none",
+          display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "16px",
+          transition: "color 0.2s"
+        }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = "var(--dark)"}
+           onMouseLeave={(e) => (e.target as HTMLElement).style.color = "var(--text-muted)"}>
+          ← Loyihalarga qaytish
+        </Link>
 
-          <div className="flex items-center gap-4 text-sm">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold"
-              style={{ background: "rgba(45,122,255,0.1)", border: "1px solid rgba(45,122,255,0.2)" }}>
-              {project.owner.name.charAt(0)}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "24px", flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: "300px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+              <span style={{
+                background: isBoomeranged ? "#e8f0fe" : isInReview ? "#fef9ee" : isCompleted ? "#e6f8f3" : "#f3f3f4",
+                color: isBoomeranged ? "#0d6efd" : isInReview ? "#d97706" : isCompleted ? "#00b37e" : "#6e6d7a",
+                padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px"
+              }}>
+                {isBoomeranged ? "🚀 Tarmoqda aylanmoqda" : isInReview ? "🔍 Ko'rib chiqilmoqda" : isCompleted ? "✅ Yakunlangan" : "📝 Qoralama"}
+              </span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
+                👁 {project.viewCount} marta ko'rilgan
+              </span>
             </div>
-            <div>
-              <div className="font-medium text-white/90">{project.owner.name}</div>
-              <div style={{ color: "var(--text-muted)" }}>{project.owner.direction}</div>
-            </div>
-          </div>
-        </div>
+            
+            <h1 style={{ fontFamily: "Outfit, sans-serif", fontSize: "2rem", fontWeight: 900, color: "var(--dark)", marginBottom: "16px", lineHeight: 1.2 }}>
+              {project.title}
+            </h1>
 
-        {/* AI Score Badge */}
-        <div className="glass rounded-2xl p-6 text-center min-w-[180px]">
-          <div className="text-xs mb-2" style={{ color: "var(--text-muted)" }}>Innovatsionlik darajasi</div>
-          <div className="text-5xl font-black mb-2" style={{ fontFamily: "Outfit, sans-serif", color: project.innovScore ? (project.innovScore >= 70 ? "#00c896" : "#f59e0b") : "#6b7280" }}>
-            {project.innovScore ?? "--"}%
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{
+                width: "40px", height: "40px", borderRadius: "50%", background: "#fef0f5", color: "var(--pink)",
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 800
+              }}>
+                {project.owner.name.charAt(0)}
+              </div>
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--dark)" }}>{project.owner.name}</div>
+                <div style={{ fontSize: "12px", color: "var(--text-light)" }}>{project.owner.direction}</div>
+              </div>
+            </div>
           </div>
-          <div className="text-xs" style={{ color: "var(--text-muted)" }}>SMART Score: {project.smartScore ?? "--"}/100</div>
+
+          {/* AI Score Badge */}
+          <Card style={{ textAlign: "center", minWidth: "180px" }}>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "8px" }}>
+              Innovatsionlik
+            </div>
+            <div style={{
+              fontFamily: "Outfit, sans-serif", fontSize: "3rem", fontWeight: 900,
+              color: project.innovScore ? (project.innovScore >= 70 ? "#00b37e" : "#f59e0b") : "var(--text-muted)",
+              marginBottom: "4px", lineHeight: 1
+            }}>
+              {project.innovScore ?? "--"}%
+            </div>
+            <div style={{ fontSize: "12px", color: "var(--text-light)", fontWeight: 500 }}>
+              SMART Score: {project.smartScore ?? "--"}/100
+            </div>
+          </Card>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* SMART Content */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="glass rounded-2xl p-6">
-            <h2 className="font-bold text-lg mb-5 flex items-center gap-2">
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "24px" }} className="lg:grid-cols-3">
+        {/* ══ SMART CONTENT ══ */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }} className="lg:col-span-2">
+          
+          <Card>
+            <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.2rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
               <span>🎯</span> SMART Tahlil
             </h2>
-            <div className="space-y-6">
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               {[
-                { label: "Specific", content: project.specific, color: "#3b82f6" },
-                { label: "Measurable", content: project.measurable, color: "#22c55e" },
-                { label: "Achievable", content: project.achievable, color: "#f59e0b" },
-                { label: "Relevant", content: project.relevant, color: "#a855f7" },
-                { label: "Time-bound", content: project.timeBound, color: "#f43f5e" },
+                { label: "Specific", content: project.specific, color: "#0d6efd", bg: "#e8f0fe" },
+                { label: "Measurable", content: project.measurable, color: "#00b37e", bg: "#e6f8f3" },
+                { label: "Achievable", content: project.achievable, color: "#d97706", bg: "#fef9ee" },
+                { label: "Relevant", content: project.relevant, color: "#7c3aed", bg: "#ede9fe" },
+                { label: "Time-bound", content: project.timeBound, color: "#ea4c89", bg: "#fce4ec" },
               ].map((s) => (
-                <div key={s.label} className="border-l-2 pl-4" style={{ borderColor: s.color }}>
-                  <h3 className="font-bold text-sm mb-1" style={{ color: s.color }}>{s.label}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{s.content}</p>
+                <div key={s.label} style={{
+                  paddingLeft: "16px", borderLeft: `3px solid ${s.color}`, position: "relative"
+                }}>
+                  <h3 style={{ fontSize: "13px", fontWeight: 800, color: s.color, marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.02em" }}>
+                    {s.label}
+                  </h3>
+                  <p style={{ fontSize: "14px", color: "var(--text)", lineHeight: 1.6 }}>
+                    {s.content}
+                  </p>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
 
           {/* AI Feedback */}
           {(project.aiFeedback || project.aiSuggestions) && (
-            <div className="glass-green rounded-2xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 text-4xl opacity-10">🤖</div>
-              <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <div style={{
+              background: "#e8f0fe", border: "1px solid #d1e3fd", borderRadius: "16px",
+              padding: "24px", position: "relative", overflow: "hidden"
+            }}>
+              <div style={{ position: "absolute", top: "-10px", right: "-10px", fontSize: "80px", opacity: 0.05, pointerEvents: "none" }}>🤖</div>
+              <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.2rem", fontWeight: 800, color: "#0d6efd", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <span>🤖</span> AI Ekspert Xulosasi
               </h2>
+              
               {project.aiFeedback && (
-                <div className="mb-4 text-sm leading-relaxed text-white/80 border-b pb-4" style={{ borderColor: "rgba(0,200,150,0.2)" }}>
+                <div style={{ fontSize: "14px", color: "var(--dark)", lineHeight: 1.6, marginBottom: "16px", paddingBottom: "16px", borderBottom: "1px solid #d1e3fd" }}>
                   {project.aiFeedback}
                 </div>
               )}
+              
               {project.aiSuggestions && (
                 <div>
-                  <h3 className="text-xs font-bold text-[#00c896] mb-2 uppercase tracking-wider">Tavsiya etilgan texnologiyalar:</h3>
-                  <p className="text-sm leading-relaxed text-white/80">{project.aiSuggestions}</p>
+                  <h3 style={{ fontSize: "11px", fontWeight: 800, color: "#0d6efd", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Tavsiya etilgan texnologiyalar
+                  </h3>
+                  <p style={{ fontSize: "14px", color: "var(--dark)", lineHeight: 1.6, background: "#fff", padding: "12px", borderRadius: "10px", border: "1px solid #d1e3fd" }}>
+                    {project.aiSuggestions}
+                  </p>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* Sidebar: Boomerang Trajectory & Interactions */}
-        <div className="space-y-6">
-          <div className="glass rounded-2xl p-6">
-            <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
+        {/* ══ SIDEBAR ══ */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          
+          <Card>
+            <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
               <span>🌐</span> Bumerang Yo'nalishi
             </h2>
-            <div className="space-y-4 relative">
-              <div className="absolute left-[11px] top-2 bottom-2 w-px bg-white/10" />
+            <div style={{ position: "relative", paddingLeft: "12px" }}>
+              <div style={{ position: "absolute", left: "23px", top: "12px", bottom: "12px", width: "2px", background: "var(--border)" }} />
               
-              <div className="flex gap-4 relative z-10">
-                <div className="w-6 h-6 rounded-full bg-[#2d7aff] flex items-center justify-center text-xs mt-1">1</div>
-                <div>
-                  <div className="font-medium text-sm">G'oya kiritildi</div>
-                  <div className="text-xs text-white/50">AI birlamchi baholadi</div>
-                </div>
-              </div>
-              
-              <div className="flex gap-4 relative z-10">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs mt-1"
-                  style={{ background: isBoomeranged || isInReview || isCompleted ? "#00c896" : "rgba(255,255,255,0.1)" }}>2</div>
-                <div>
-                  <div className="font-medium text-sm" style={{ opacity: isBoomeranged || isInReview || isCompleted ? 1 : 0.5 }}>Tarmoqqa uzatildi</div>
-                  <div className="text-xs text-white/50">
-                    {project.interactions.length}/3 taklif yig'ildi
+              {[
+                { label: "G'oya kiritildi", sub: "AI birlamchi baholadi", active: true, color: "#0d6efd" },
+                { label: "Tarmoqqa uzatildi", sub: `${project.interactions.length}/3 taklif yig'ildi`, active: isBoomeranged || isInReview || isCompleted, color: "#00b37e" },
+                { label: "Ko'rib chiqilmoqda", sub: "Takliflarni tasdiqlash", active: isInReview || isCompleted, color: "#d97706" },
+                { label: "G'oya mukammal", sub: "Yakuniy AI tahlili", active: isCompleted, color: "#ea4c89" },
+              ].map((step, idx) => (
+                <div key={idx} style={{ display: "flex", gap: "16px", marginBottom: idx === 3 ? 0 : "24px", position: "relative", zIndex: 1 }}>
+                  <div style={{
+                    width: "24px", height: "24px", borderRadius: "50%",
+                    background: step.active ? step.color : "#fff",
+                    border: step.active ? "none" : "2px solid var(--border)",
+                    color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "11px", fontWeight: 800, flexShrink: 0, marginTop: "2px",
+                    transition: "all 0.3s"
+                  }}>
+                    {step.active ? idx + 1 : ""}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "14px", fontWeight: 700, color: step.active ? "var(--dark)" : "var(--text-muted)", marginBottom: "2px" }}>
+                      {step.label}
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--text-light)" }}>
+                      {step.sub}
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex gap-4 relative z-10">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs mt-1"
-                  style={{ background: isInReview || isCompleted ? "#f59e0b" : "rgba(255,255,255,0.1)" }}>3</div>
-                <div>
-                  <div className="font-medium text-sm" style={{ opacity: isInReview || isCompleted ? 1 : 0.5 }}>Ko'rib chiqilmoqda</div>
-                  <div className="text-xs text-white/50">Takliflarni tasdiqlash</div>
-                </div>
-              </div>
-
-              <div className="flex gap-4 relative z-10">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs mt-1"
-                  style={{ background: isCompleted ? "#00c896" : "rgba(255,255,255,0.1)" }}>4</div>
-                <div>
-                  <div className="font-medium text-sm" style={{ opacity: isCompleted ? 1 : 0.5 }}>G'oya mukammal</div>
-                  <div className="text-xs text-white/50">Yakuniy AI tahlili</div>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          </Card>
 
-          <div className="glass rounded-2xl p-6">
-            <h2 className="font-bold text-lg mb-4">💬 Takliflar ({project.interactions.length})</h2>
+          <Card>
+            <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px" }}>
+              💬 Takliflar ({project.interactions.length})
+            </h2>
             {project.interactions.length === 0 ? (
-              <p className="text-sm text-white/40 text-center py-4">Hali hech kim taklif bermadi</p>
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center", padding: "20px 0" }}>
+                Hali hech kim taklif bermadi
+              </p>
             ) : (
-              <div className="space-y-4">
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {project.interactions.map(int => (
-                  <div key={int.id} className="p-4 rounded-xl border" style={{ background: "rgba(255,255,255,0.03)", borderColor: "var(--glass-border)" }}>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium text-sm">{int.user.name}</div>
+                  <div key={int.id} style={{
+                    padding: "16px", background: "var(--bg-soft)", borderRadius: "12px", border: "1px solid var(--border)"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "8px" }}>
+                      <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--dark)" }}>{int.user.name}</div>
+                      
                       {int.status === "PENDING" && isOwner ? (
-                        <div className="flex gap-2">
-                          <button onClick={() => handleInteractionStatus(int.id, "ACCEPTED")} className="text-xs text-green-400 hover:underline">Qabul qilish</button>
-                          <button onClick={() => handleInteractionStatus(int.id, "REJECTED")} className="text-xs text-rose-400 hover:underline">Rad etish</button>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <button onClick={() => handleInteractionStatus(int.id, "ACCEPTED")} style={{
+                            background: "#00b37e", color: "#fff", border: "none", padding: "4px 8px",
+                            borderRadius: "4px", fontSize: "11px", fontWeight: 700, cursor: "pointer"
+                          }}>Qabul</button>
+                          <button onClick={() => handleInteractionStatus(int.id, "REJECTED")} style={{
+                            background: "#f43f5e", color: "#fff", border: "none", padding: "4px 8px",
+                            borderRadius: "4px", fontSize: "11px", fontWeight: 700, cursor: "pointer"
+                          }}>Rad</button>
                         </div>
                       ) : (
-                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${int.status === "ACCEPTED" ? "bg-green-500/20 text-green-400" : int.status === "REJECTED" ? "bg-rose-500/20 text-rose-400" : "bg-white/10 text-white/50"}`}>
+                        <span style={{
+                          background: int.status === "ACCEPTED" ? "#e6f8f3" : int.status === "REJECTED" ? "#fce4ec" : "var(--border)",
+                          color: int.status === "ACCEPTED" ? "#00b37e" : int.status === "REJECTED" ? "#f43f5e" : "var(--text-muted)",
+                          padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: 800, textTransform: "uppercase"
+                        }}>
                           {int.status}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-white/70 leading-relaxed mb-2">{int.suggestionText}</p>
+                    <p style={{ fontSize: "13px", color: "var(--text)", lineHeight: 1.5, marginBottom: "8px" }}>
+                      {int.suggestionText}
+                    </p>
                     {int.technology && (
-                      <div className="text-xs font-medium" style={{ color: "#2d7aff" }}>🔧 {int.technology}</div>
+                      <div style={{ fontSize: "12px", fontWeight: 600, color: "#0d6efd" }}>
+                        🔧 {int.technology}
+                      </div>
                     )}
                   </div>
                 ))}
               </div>
             )}
-          </div>
+          </Card>
         </div>
       </div>
     </div>
