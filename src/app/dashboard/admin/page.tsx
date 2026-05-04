@@ -29,17 +29,27 @@ const RANK_ICONS: Record<string, string> = {
 
 const CHART_OPTS = {
   responsive: true,
-  plugins: { legend: { labels: { color: "rgba(240,244,255,0.7)", font: { family: "Inter" } } } },
+  plugins: { legend: { labels: { color: "#6e6d7a", font: { family: "Inter", size: 12 } } } },
   scales: {
-    x: { ticks: { color: "rgba(240,244,255,0.5)" }, grid: { color: "rgba(255,255,255,0.05)" } },
-    y: { ticks: { color: "rgba(240,244,255,0.5)" }, grid: { color: "rgba(255,255,255,0.05)" } },
+    x: { ticks: { color: "#9e9eb0" }, grid: { color: "rgba(0,0,0,0.04)" } },
+    y: { ticks: { color: "#9e9eb0" }, grid: { color: "rgba(0,0,0,0.04)" } },
   },
 };
 
 const PIE_OPTS = {
   responsive: true,
-  plugins: { legend: { position: "bottom" as const, labels: { color: "rgba(240,244,255,0.7)", padding: 16 } } },
+  plugins: { legend: { position: "bottom" as const, labels: { color: "#6e6d7a", padding: 16, font: { family: "Inter", size: 12 } } } },
 };
+
+// Reusable card
+const Card = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div style={{
+    background: "#fff", border: "1px solid var(--border)", borderRadius: "16px",
+    padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", ...style
+  }}>
+    {children}
+  </div>
+);
 
 export default function AdminPage() {
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -52,13 +62,27 @@ export default function AdminPage() {
       .catch(() => setLoading(false));
   }, []);
 
+  if (loading) return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+      <svg width="48" height="48" viewBox="0 0 100 100" fill="none" style={{ animation: "spin 2s linear infinite" }}>
+        <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill="url(#bgl)"/>
+        <defs>
+          <linearGradient id="bgl" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ea4c89"/><stop offset="100%" stopColor="#f77eb5"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+
   const demo = !stats;
 
   const kpis = [
-    { label: "Jami foydalanuvchilar", value: stats?.totalUsers ?? 24,       icon: "👥", color: "#2d7aff" },
-    { label: "Jami loyihalar",        value: stats?.totalProjects ?? 38,     icon: "💡", color: "#00c896" },
-    { label: "Jami takliflar",        value: stats?.totalInteractions ?? 142, icon: "💬", color: "#a855f7" },
-    { label: "O'rtacha innov. bali",  value: `${stats?.avgInnovScore ?? 67}%`, icon: "⚡", color: "#f59e0b" },
+    { label: "Jami foydalanuvchilar", value: stats?.totalUsers ?? 24,       icon: "👥", color: "#0d6efd", bg: "#e8f0fe" },
+    { label: "Jami loyihalar",        value: stats?.totalProjects ?? 38,     icon: "💡", color: "#00b37e", bg: "#e6f8f3" },
+    { label: "Jami takliflar",        value: stats?.totalInteractions ?? 142, icon: "💬", color: "#7c3aed", bg: "#ede9fe" },
+    { label: "O'rtacha innov. bali",  value: `${stats?.avgInnovScore ?? 67}%`, icon: "⚡", color: "#ea4c89", bg: "#fce4ec" },
   ];
 
   const techLabels = demo
@@ -97,44 +121,66 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="p-6 lg:p-8 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px", paddingBottom: "40px" }}>
+      
+      {/* ══ HEADER ══ */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
         <div>
-          <div className="badge badge-violet mb-3 w-fit">📊 Admin Panel</div>
-          <h1 className="heading-lg">Dissertatsiya <span className="gradient-text">Analitikasi</span></h1>
-          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
-            III bob uchun platforma statistikasi
-            {demo && <span className="badge badge-gold text-xs ml-3">Demo ma'lumotlar</span>}
+          <div style={{
+            display: "inline-block", background: "var(--bg-dark)", color: "#fff",
+            padding: "4px 12px", borderRadius: "6px", fontSize: "11px", fontWeight: 700,
+            textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "12px"
+          }}>
+            📊 Admin Panel
+          </div>
+          <h1 style={{ fontFamily: "Outfit, sans-serif", fontSize: "2rem", fontWeight: 900, color: "var(--dark)", marginBottom: "8px", letterSpacing: "-0.03em" }}>
+            Dissertatsiya Analitikasi
+          </h1>
+          <p style={{ fontSize: "14px", color: "var(--text-light)" }}>
+            Platforma statistikasi
+            {demo && <span style={{ marginLeft: "12px", background: "#fef9ee", color: "#d97706", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 600 }}>Demo ma'lumotlar</span>}
           </p>
         </div>
         <button
           onClick={() => window.print()}
-          className="btn-ghost text-sm w-fit"
-          id="export-btn"
+          style={{
+            background: "#fff", color: "var(--dark)", padding: "10px 20px",
+            borderRadius: "8px", fontWeight: 600, border: "1.5px solid var(--border)",
+            fontSize: "13px", cursor: "pointer", transition: "background 0.2s"
+          }}
+          onMouseEnter={(e) => (e.target as HTMLElement).style.background = "var(--bg-soft)"}
+          onMouseLeave={(e) => (e.target as HTMLElement).style.background = "#fff"}
         >
           📥 Hisobot yuklab olish
         </button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ══ KPI CARDS ══ */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
         {kpis.map((k) => (
-          <div key={k.label} className="glass rounded-2xl p-5">
-            <div className="text-2xl mb-3">{k.icon}</div>
-            <div className="text-3xl font-bold mb-1" style={{ color: k.color, fontFamily: "Outfit, sans-serif" }}>
+          <Card key={k.label} style={{ padding: "20px" }}>
+            <div style={{
+              width: "40px", height: "40px", borderRadius: "10px",
+              background: k.bg, color: k.color,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px",
+              marginBottom: "16px"
+            }}>
+              {k.icon}
+            </div>
+            <div style={{ fontFamily: "Outfit, sans-serif", fontSize: "2rem", fontWeight: 800, color: "var(--dark)", marginBottom: "4px" }}>
               {k.value}
             </div>
-            <div className="text-xs" style={{ color: "var(--text-muted)" }}>{k.label}</div>
-          </div>
+            <div style={{ fontSize: "13px", color: "var(--text-light)", fontWeight: 500 }}>{k.label}</div>
+          </Card>
         ))}
       </div>
 
-      {/* Charts row 1 */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Top Technologies */}
-        <div className="glass rounded-2xl p-6">
-          <h2 className="font-bold text-base mb-5" style={{ fontFamily: "Outfit, sans-serif" }}>
+      {/* ══ CHARTS ROW 1 ══ */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "24px" }}>
+        
+        {/* Technologies Bar Chart */}
+        <Card>
+          <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px" }}>
             🔧 Eng ko'p taklif qilingan texnologiyalar
           </h2>
           <Bar
@@ -144,20 +190,19 @@ export default function AdminPage() {
                 label: "Takliflar soni",
                 data: techData,
                 backgroundColor: [
-                  "rgba(45,122,255,0.7)", "rgba(0,200,150,0.7)", "rgba(168,85,247,0.7)",
-                  "rgba(245,158,11,0.7)", "rgba(244,63,94,0.7)", "rgba(34,197,94,0.7)", "rgba(59,130,246,0.7)",
+                  "#ea4c89", "#0d6efd", "#00b37e", "#7c3aed", "#d97706", "#f43f5e", "#06b6d4"
                 ],
-                borderRadius: 8,
+                borderRadius: 4,
                 borderSkipped: false,
               }],
             }}
             options={{ ...CHART_OPTS, indexAxis: "y" as const } as never}
           />
-        </div>
+        </Card>
 
-        {/* Weekly activity */}
-        <div className="glass rounded-2xl p-6">
-          <h2 className="font-bold text-base mb-5" style={{ fontFamily: "Outfit, sans-serif" }}>
+        {/* Weekly Activity Line Chart */}
+        <Card>
+          <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px" }}>
             📈 Haftalik faollik
           </h2>
           <Line
@@ -166,96 +211,103 @@ export default function AdminPage() {
               datasets: [{
                 label: "Yangi loyihalar",
                 data: weekData,
-                borderColor: "#2d7aff",
-                backgroundColor: "rgba(45,122,255,0.1)",
+                borderColor: "#ea4c89",
+                backgroundColor: "rgba(234,76,137,0.1)",
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: "#2d7aff",
-                pointRadius: 5,
+                pointBackgroundColor: "#ea4c89",
+                pointRadius: 4,
               }],
             }}
             options={CHART_OPTS as never}
           />
-        </div>
+        </Card>
       </div>
 
-      {/* Charts row 2 */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Project status */}
-        <div className="glass rounded-2xl p-6">
-          <h2 className="font-bold text-base mb-5" style={{ fontFamily: "Outfit, sans-serif" }}>
+      {/* ══ CHARTS ROW 2 ══ */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "24px" }}>
+        
+        {/* Project Status Pie */}
+        <Card>
+          <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px" }}>
             💡 Loyihalar holati
           </h2>
-          <div className="max-w-xs mx-auto">
+          <div style={{ maxWidth: "260px", margin: "0 auto" }}>
             <Doughnut
               data={{
                 labels: statusLabels,
                 datasets: [{
                   data: statusData,
-                  backgroundColor: ["rgba(107,114,128,0.7)", "rgba(45,122,255,0.7)", "rgba(245,158,11,0.7)", "rgba(0,200,150,0.7)"],
+                  backgroundColor: ["#9e9eb0", "#0d6efd", "#d97706", "#00b37e"],
                   borderWidth: 0,
                 }],
               }}
               options={PIE_OPTS as never}
             />
           </div>
-        </div>
+        </Card>
 
-        {/* Users by direction */}
-        <div className="glass rounded-2xl p-6">
-          <h2 className="font-bold text-base mb-5" style={{ fontFamily: "Outfit, sans-serif" }}>
+        {/* Directions Pie */}
+        <Card>
+          <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px" }}>
             🎓 Yo'nalishlar bo'yicha talabalar
           </h2>
-          <div className="max-w-xs mx-auto">
+          <div style={{ maxWidth: "260px", margin: "0 auto" }}>
             <Doughnut
               data={{
                 labels: dirLabels,
                 datasets: [{
                   data: dirData,
-                  backgroundColor: [
-                    "rgba(45,122,255,0.7)", "rgba(0,200,150,0.7)", "rgba(168,85,247,0.7)",
-                    "rgba(245,158,11,0.7)", "rgba(244,63,94,0.7)",
-                  ],
+                  backgroundColor: ["#ea4c89", "#0d6efd", "#00b37e", "#7c3aed", "#d97706"],
                   borderWidth: 0,
                 }],
               }}
               options={PIE_OPTS as never}
             />
           </div>
-        </div>
+        </Card>
       </div>
 
-      {/* Top Users leaderboard */}
-      <div className="glass rounded-2xl p-6">
-        <h2 className="font-bold text-base mb-5" style={{ fontFamily: "Outfit, sans-serif" }}>
+      {/* ══ LEADERBOARD ══ */}
+      <Card>
+        <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px" }}>
           🏆 Innovatorlar reytingi
         </h2>
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {topUsers.map((u, i) => (
-            <div key={u.id} className="flex items-center gap-4 p-4 rounded-xl transition-all hover:bg-white/5">
-              <div className="w-8 text-center font-bold text-sm"
-                style={{ color: i === 0 ? "#f59e0b" : i === 1 ? "#9ca3af" : i === 2 ? "#b45309" : "rgba(255,255,255,0.3)" }}>
+            <div key={u.id} style={{
+              display: "flex", alignItems: "center", gap: "16px", padding: "16px",
+              background: "var(--bg-soft)", borderRadius: "12px", border: "1px solid var(--border)"
+            }}>
+              <div style={{
+                width: "24px", textAlign: "center", fontSize: "14px", fontWeight: 800,
+                color: i === 0 ? "#f59e0b" : i === 1 ? "#9ca3af" : i === 2 ? "#b45309" : "var(--text-muted)"
+              }}>
                 {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
               </div>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold"
-                style={{ background: "rgba(45,122,255,0.15)", border: "1px solid rgba(45,122,255,0.25)" }}>
+              <div style={{
+                width: "36px", height: "36px", borderRadius: "50%", background: "#fef0f5", color: "var(--pink)",
+                display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "14px"
+              }}>
                 {u.name.charAt(0)}
               </div>
-              <div className="flex-1">
-                <div className="font-medium text-sm flex items-center gap-2">
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--dark)", marginBottom: "2px", display: "flex", alignItems: "center", gap: "6px" }}>
                   {u.name}
-                  <span className="text-base">{RANK_ICONS[u.rank]}</span>
+                  <span style={{ fontSize: "14px" }}>{RANK_ICONS[u.rank]}</span>
                 </div>
-                <div className="text-xs" style={{ color: "var(--text-muted)" }}>{u.direction} · {u._count.projects} ta loyiha</div>
+                <div style={{ fontSize: "12px", color: "var(--text-light)" }}>
+                  {u.direction} · {u._count.projects} ta loyiha
+                </div>
               </div>
-              <div className="text-right">
-                <div className="font-bold" style={{ color: "#f59e0b", fontFamily: "Outfit, sans-serif" }}>{u.xp} XP</div>
-                <div className="text-xs" style={{ color: "var(--text-muted)" }}>{u.rank}</div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "Outfit, sans-serif", fontSize: "16px", fontWeight: 800, color: "var(--pink)" }}>{u.xp} XP</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600 }}>{u.rank}</div>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -65,107 +65,144 @@ export default function FeedPage() {
 
   const getScoreBadge = (score: number | null) => {
     if (score === null) return null;
-    const color = score >= 80 ? "#00c896" : score >= 60 ? "#3b82f6" : score >= 40 ? "#f59e0b" : "#f43f5e";
-    return <span className="badge text-xs ml-2" style={{ color, background: `${color}18`, border: `1px solid ${color}30` }}>
-      ⚡ {score}%
-    </span>;
+    const color = score >= 80 ? "#00b37e" : score >= 60 ? "#0d6efd" : score >= 40 ? "#d97706" : "#f43f5e";
+    return (
+      <span style={{
+        color, background: `${color}18`, border: `1px solid ${color}30`,
+        padding: "4px 8px", borderRadius: "6px", fontSize: "11px", fontWeight: 700
+      }}>
+        ⚡ {score}%
+      </span>
+    );
   };
 
   return (
-    <div className="p-6 lg:p-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="badge badge-green mb-3 w-fit">🌐 Bumerang Lentasi</div>
-        <h1 className="heading-lg mb-2">
-          Hamkasblaringiz G'oyalarini <span className="gradient-text">Boyiting</span>
+    <div style={{ maxWidth: "1200px", margin: "0 auto", paddingBottom: "40px" }}>
+      
+      {/* ══ HEADER ══ */}
+      <div style={{ marginBottom: "32px" }}>
+        <div style={{
+          display: "inline-block", background: "var(--bg-dark)", color: "#fff",
+          padding: "4px 12px", borderRadius: "6px", fontSize: "11px", fontWeight: 700,
+          textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "12px"
+        }}>
+          🌐 Bumerang Lentasi
+        </div>
+        <h1 style={{ fontFamily: "Outfit, sans-serif", fontSize: "2rem", fontWeight: 900, color: "var(--dark)", marginBottom: "8px", letterSpacing: "-0.03em" }}>
+          Hamkasblaringiz G'oyalarini <span style={{ color: "var(--pink)" }}>Boyiting</span>
         </h1>
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+        <p style={{ fontSize: "14px", color: "var(--text-light)" }}>
           Har bir qabul qilingan taklif uchun +10 XP olasiz!
         </p>
       </div>
 
-      {/* Filter */}
-      <div className="flex gap-2 mb-6 flex-wrap">
+      {/* ══ FILTERS ══ */}
+      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "24px" }}>
         {[
           { key: "ALL", label: "Hammasi" },
           { key: "BOOMERANGED", label: "🚀 Faol" },
           { key: "IN_REVIEW", label: "🔍 Ko'rib chiqilmoqda" },
-        ].map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key)}
-            className={`badge text-xs cursor-pointer transition-all ${filter === f.key ? "badge-blue" : "badge-green"}`}
-            style={{ padding: "6px 14px" }}
-          >
-            {f.label}
-          </button>
-        ))}
-        <span className="badge badge-gold text-xs ml-auto">{filtered.length} ta loyiha</span>
+        ].map((f) => {
+          const isActive = filter === f.key;
+          return (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              style={{
+                background: isActive ? "var(--dark)" : "#fff",
+                color: isActive ? "#fff" : "var(--text-light)",
+                border: isActive ? "1px solid var(--dark)" : "1px solid var(--border)",
+                padding: "8px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: 600,
+                cursor: "pointer", transition: "all 0.2s"
+              }}
+            >
+              {f.label}
+            </button>
+          );
+        })}
+        <span style={{ marginLeft: "auto", background: "#fef9ee", color: "#d97706", border: "1px solid #fef08a", padding: "8px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: 600 }}>
+          {filtered.length} ta loyiha
+        </span>
       </div>
 
       {loading ? (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "24px" }}>
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="glass rounded-2xl p-6">
-              <div className="skeleton h-5 mb-3 rounded" />
-              <div className="skeleton h-3 mb-2 w-2/3 rounded" />
-              <div className="skeleton h-16 mb-4 rounded" />
-              <div className="skeleton h-9 rounded-xl" />
-            </div>
+            <div key={i} style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "16px", height: "240px", animation: "pulse 2s infinite" }} />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="text-6xl mb-4">🌐</div>
-          <p className="text-lg mb-2" style={{ color: "var(--text-secondary)" }}>
+        <div style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "24px", padding: "80px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: "64px", marginBottom: "16px" }}>🌐</div>
+          <p style={{ fontSize: "18px", fontWeight: 700, color: "var(--dark)", marginBottom: "8px" }}>
             Hozircha lentada loyiha yo'q
           </p>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+          <p style={{ fontSize: "14px", color: "var(--text-light)" }}>
             Birinchi bo'lib g'oyangizni yuboring!
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "24px" }}>
           {filtered.map((p) => (
-            <div key={p.id} className="glass rounded-2xl p-6 glass-hover flex flex-col">
-              {/* Owner */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-                  style={{ background: "rgba(45,122,255,0.15)", border: "1px solid rgba(45,122,255,0.25)" }}>
+            <div key={p.id} style={{
+              background: "#fff", border: "1px solid var(--border)", borderRadius: "16px",
+              padding: "24px", display: "flex", flexDirection: "column",
+              transition: "transform 0.2s, box-shadow 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              const t = e.currentTarget as HTMLElement;
+              t.style.transform = "translateY(-4px)";
+              t.style.boxShadow = "0 12px 24px rgba(0,0,0,0.06)";
+            }}
+            onMouseLeave={(e) => {
+              const t = e.currentTarget as HTMLElement;
+              t.style.transform = "none";
+              t.style.boxShadow = "none";
+            }}>
+              
+              {/* Owner Info */}
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                <div style={{
+                  width: "36px", height: "36px", borderRadius: "50%",
+                  background: "#e8f0fe", border: "1px solid #d1e3fd", color: "#0d6efd",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "14px", fontWeight: 800, flexShrink: 0
+                }}>
                   {p.owner.name.charAt(0)}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate flex items-center gap-1">
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--dark)", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {p.owner.name}
-                    <span className="text-xs">{RANK_ICONS[p.owner.rank]}</span>
+                    <span style={{ fontSize: "14px" }}>{RANK_ICONS[p.owner.rank]}</span>
                   </div>
-                  <div className="text-xs" style={{ color: "var(--text-muted)" }}>{p.owner.direction}</div>
+                  <div style={{ fontSize: "12px", color: "var(--text-light)" }}>{p.owner.direction}</div>
                 </div>
-                <div className="flex-shrink-0">
-                  {getScoreBadge(p.innovScore)}
-                </div>
+                <div style={{ flexShrink: 0 }}>{getScoreBadge(p.innovScore)}</div>
               </div>
 
-              {/* Title & excerpt */}
-              <h3 className="font-bold text-base mb-2 line-clamp-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {/* Title & specific text */}
+              <h3 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "8px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                 {p.title}
               </h3>
-              <p className="text-sm leading-relaxed mb-4 line-clamp-3 flex-1"
-                style={{ color: "var(--text-secondary)" }}>
+              <p style={{ fontSize: "13px", color: "var(--text-light)", lineHeight: 1.6, flex: 1, marginBottom: "20px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                 {p.specific}
               </p>
 
               {/* Footer */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-muted)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "16px", borderTop: "1px solid var(--border)" }}>
+                <div style={{ display: "flex", gap: "12px", fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
                   <span>👁 {p.viewCount}</span>
                   <span>💬 {p._count?.interactions ?? 0}</span>
-                  <span>📅 {new Date(p.createdAt).toLocaleDateString("uz-UZ")}</span>
                 </div>
                 <button
                   onClick={() => setSelected(p)}
-                  className="btn-primary text-xs py-2 px-4"
-                  id={`suggest-btn-${p.id}`}
+                  style={{
+                    background: "var(--pink)", color: "#fff", border: "none", borderRadius: "6px",
+                    padding: "6px 14px", fontSize: "12px", fontWeight: 700, cursor: "pointer",
+                    transition: "background 0.2s"
+                  }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.background = "var(--pink-hover)"}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.background = "var(--pink)"}
                 >
                   Taklif berish →
                 </button>
@@ -175,66 +212,95 @@ export default function FeedPage() {
         </div>
       )}
 
-      {/* Suggestion Modal */}
+      {/* ══ MODAL ══ */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: "rgba(10,22,40,0.85)", backdropFilter: "blur(8px)" }}>
-          <div className="glass rounded-3xl p-8 w-full max-w-lg anim-slide-up">
-            <div className="flex items-start justify-between mb-5">
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 100, background: "rgba(13,13,13,0.6)",
+          backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px"
+        }}>
+          <div style={{
+            background: "#fff", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "560px",
+            boxShadow: "0 24px 48px rgba(0,0,0,0.1)", animation: "slideUp 0.3s ease-out"
+          }}>
+            <style>{`@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+            
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "24px" }}>
               <div>
-                <div className="badge badge-green mb-2 w-fit">💬 Taklif berish</div>
-                <h3 className="font-bold text-lg" style={{ fontFamily: "Outfit, sans-serif" }}>
+                <div style={{ display: "inline-block", background: "#e8f0fe", color: "#0d6efd", padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", marginBottom: "12px" }}>
+                  💬 Taklif berish
+                </div>
+                <h3 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.3rem", fontWeight: 800, color: "var(--dark)" }}>
                   {selected.title}
                 </h3>
-                <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
-                  Muallif: {selected.owner.name}
+                <p style={{ fontSize: "13px", color: "var(--text-light)", marginTop: "4px" }}>
+                  Muallif: <span style={{ fontWeight: 600, color: "var(--dark)" }}>{selected.owner.name}</span>
                 </p>
               </div>
-              <button onClick={() => setSelected(null)}
-                className="text-white/40 hover:text-white transition-colors text-xl">✕</button>
+              <button onClick={() => setSelected(null)} style={{
+                background: "var(--bg-soft)", border: "none", width: "32px", height: "32px",
+                borderRadius: "50%", fontSize: "14px", color: "var(--text-light)", cursor: "pointer"
+              }}>✕</button>
             </div>
 
-            <div className="space-y-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--text-secondary)" }}>
+                <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "var(--dark)", marginBottom: "8px" }}>
                   Taklif matni (kamida 50 belgi)
                 </label>
                 <textarea
-                  id="suggestion-text"
-                  className="input-glass min-h-[130px]"
-                  placeholder="Bu loyihani qanday boyitish mumkin? Qanday texnologiya yoki metodika qo'shish kerak?..."
+                  placeholder="Bu loyihani qanday boyitish mumkin?..."
                   value={suggestion}
                   onChange={(e) => setSuggestion(e.target.value)}
+                  style={{
+                    width: "100%", minHeight: "120px", padding: "14px", background: "var(--bg-soft)",
+                    border: "1.5px solid var(--border)", borderRadius: "10px", fontSize: "14px", color: "var(--dark)",
+                    outline: "none", fontFamily: "Inter, sans-serif", resize: "none", transition: "border-color 0.2s"
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = "var(--pink)"}
+                  onBlur={(e) => e.target.style.borderColor = "var(--border)"}
                 />
-                <div className="text-xs mt-1 text-right" style={{ color: suggestion.length >= 50 ? "#00c896" : "var(--text-muted)" }}>
+                <div style={{ fontSize: "12px", marginTop: "6px", textAlign: "right", fontWeight: 600, color: suggestion.length >= 50 ? "#00b37e" : "var(--text-muted)" }}>
                   {suggestion.length}/50+
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--text-secondary)" }}>
+                <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "var(--dark)", marginBottom: "8px" }}>
                   Tavsiya etilgan texnologiya (ixtiyoriy)
                 </label>
                 <input
-                  id="suggestion-tech"
-                  className="input-glass"
-                  placeholder="Masalan: Phet, Quizizz, VR, Kahoot, Google Forms..."
+                  placeholder="Masalan: Phet, Quizizz..."
                   value={technology}
                   onChange={(e) => setTechnology(e.target.value)}
+                  style={{
+                    width: "100%", padding: "14px", background: "var(--bg-soft)",
+                    border: "1.5px solid var(--border)", borderRadius: "10px", fontSize: "14px", color: "var(--dark)",
+                    outline: "none", fontFamily: "Inter, sans-serif", transition: "border-color 0.2s"
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = "var(--pink)"}
+                  onBlur={(e) => e.target.style.borderColor = "var(--border)"}
                 />
               </div>
             </div>
 
-            <div className="flex gap-3 mt-6">
-              <button onClick={() => setSelected(null)} className="btn-ghost flex-1">Bekor qilish</button>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button onClick={() => setSelected(null)} style={{
+                flex: 1, padding: "12px", background: "#fff", color: "var(--dark)",
+                border: "1.5px solid var(--border)", borderRadius: "10px", fontSize: "14px", fontWeight: 600, cursor: "pointer"
+              }}>
+                Bekor qilish
+              </button>
               <button
                 onClick={handleSuggest}
-                className="btn-primary btn-green flex-1"
                 disabled={submitting || suggestion.length < 50}
-                id="submit-suggestion"
-                style={{ opacity: suggestion.length >= 50 ? 1 : 0.5 }}
+                style={{
+                  flex: 1, padding: "12px", background: "var(--pink)", color: "#fff",
+                  border: "none", borderRadius: "10px", fontSize: "14px", fontWeight: 600,
+                  cursor: (submitting || suggestion.length < 50) ? "not-allowed" : "pointer",
+                  opacity: suggestion.length >= 50 ? 1 : 0.5, transition: "background 0.2s"
+                }}
               >
-                {submitting ? "Yuborilmoqda..." : "✅ Taklif yuborish (+10 XP)"}
+                {submitting ? "Yuborilmoqda..." : "✅ Yuborish (+10 XP)"}
               </button>
             </div>
           </div>
