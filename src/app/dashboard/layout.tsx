@@ -3,15 +3,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
-function BoomerangIcon({ spinning = false }: { spinning?: boolean }) {
+function BoomerangIcon({ size = 32, id = "side-b" }: { size?: number; id?: string }) {
   return (
-    <svg viewBox="0 0 100 100" fill="none" className={`w-full h-full ${spinning ? "anim-spin-slow" : ""}`}>
-      <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z"
-        fill="url(#bgs)" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+      <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill={`url(#${id})`} />
       <defs>
-        <linearGradient id="bgs" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#2d7aff" />
-          <stop offset="100%" stopColor="#00c896" />
+        <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ea4c89" />
+          <stop offset="100%" stopColor="#f77eb5" />
         </linearGradient>
       </defs>
     </svg>
@@ -38,95 +37,137 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="relative z-10 flex min-h-screen">
-      {/* SIDEBAR — Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 glass border-r" style={{ borderColor: "var(--glass-border)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-soft)", fontFamily: "Inter, sans-serif" }}>
+
+      {/* ══ SIDEBAR — Desktop ══ */}
+      <aside style={{
+        width: "260px",
+        background: "#fff",
+        borderRight: "1px solid var(--border)",
+        display: "flex",
+        flexDirection: "column",
+        flexShrink: 0,
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+      }} className="hidden lg:flex">
+
         {/* Logo */}
-        <div className="p-6 border-b" style={{ borderColor: "var(--glass-border)" }}>
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-9 h-9"><BoomerangIcon spinning /></div>
-            <span className="font-bold text-lg gradient-text" style={{ fontFamily: "Outfit, sans-serif" }}>
+        <div style={{ padding: "24px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "10px" }}>
+          <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+            <BoomerangIcon size={28} id="dash-logo" />
+            <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1.1rem", color: "var(--dark)", letterSpacing: "-0.02em" }}>
               Smart-Boomerang
             </span>
           </Link>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 p-4 space-y-1">
+        {/* Nav Links */}
+        <nav style={{ flex: 1, padding: "20px 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0 12px 8px" }}>
+            Menyu
+          </div>
           {navItems.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  active
-                    ? "glass-blue text-white"
-                    : "text-white/60 hover:text-white hover:bg-white/5"
-                }`}
+                style={{
+                  display: "flex", alignItems: "center", gap: "12px",
+                  padding: "10px 12px", borderRadius: "8px", textDecoration: "none",
+                  fontSize: "14px", fontWeight: active ? 600 : 500,
+                  color: active ? "var(--dark)" : "var(--text-light)",
+                  background: active ? "var(--bg-soft)" : "transparent",
+                  transition: "background 0.2s, color 0.2s",
+                }}
               >
-                <span className="text-base">{item.icon}</span>
+                <span style={{ fontSize: "18px" }}>{item.icon}</span>
                 {item.label}
-                {active && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: "#2d7aff" }} />
-                )}
               </Link>
             );
           })}
         </nav>
 
-        {/* User area */}
-        <div className="p-4 border-t" style={{ borderColor: "var(--glass-border)" }}>
+        {/* Bottom Area */}
+        <div style={{ padding: "20px 16px", borderTop: "1px solid var(--border)" }}>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/50 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-200"
-            id="logout-btn"
+            style={{
+              display: "flex", alignItems: "center", gap: "12px", width: "100%",
+              padding: "10px 12px", borderRadius: "8px", textDecoration: "none",
+              fontSize: "14px", fontWeight: 500, color: "#e11d48",
+              background: "transparent", border: "none", cursor: "pointer",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) => (e.target as HTMLElement).style.background = "#fff1f2"}
+            onMouseLeave={(e) => (e.target as HTMLElement).style.background = "transparent"}
           >
-            <span>🚪</span> Chiqish
+            <span style={{ fontSize: "18px" }}>🚪</span> Chiqish
           </button>
         </div>
       </aside>
 
-      {/* MOBILE NAVBAR */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 glass border-b flex items-center justify-between px-4 py-3" style={{ borderColor: "var(--glass-border)" }}>
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8"><BoomerangIcon spinning /></div>
-          <span className="font-bold gradient-text" style={{ fontFamily: "Outfit, sans-serif" }}>Smart-B</span>
+      {/* ══ MOBILE NAVBAR ══ */}
+      <div className="lg:hidden" style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
+        background: "#fff", borderBottom: "1px solid var(--border)",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "12px 20px"
+      }}>
+        <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
+          <BoomerangIcon size={24} id="mob-logo" />
+          <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, color: "var(--dark)" }}>Smart-B</span>
         </Link>
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-white/70">
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          style={{ background: "none", border: "none", fontSize: "20px", color: "var(--dark)", cursor: "pointer" }}
+        >
           {mobileOpen ? "✕" : "☰"}
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 pt-16">
-          <div className="glass h-full p-4 space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  pathname === item.href
-                    ? "glass-blue text-white"
-                    : "text-white/60 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <span>{item.icon}</span>{item.label}
-              </Link>
-            ))}
-            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-rose-400 hover:bg-rose-500/10 transition-all">
-              <span>🚪</span> Chiqish
-            </button>
-          </div>
+        <div className="lg:hidden" style={{
+          position: "fixed", inset: 0, top: "54px", zIndex: 40,
+          background: "#fff", padding: "20px"
+        }}>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              style={{
+                display: "flex", alignItems: "center", gap: "12px",
+                padding: "14px", borderBottom: "1px solid var(--border)",
+                textDecoration: "none", fontSize: "15px", color: "var(--dark)",
+                fontWeight: pathname === item.href ? 700 : 500,
+              }}
+            >
+              <span>{item.icon}</span>{item.label}
+            </Link>
+          ))}
+          <button
+            onClick={handleLogout}
+            style={{
+              display: "flex", alignItems: "center", gap: "12px", width: "100%",
+              padding: "14px", border: "none", background: "none",
+              fontSize: "15px", color: "#e11d48", fontWeight: 500, cursor: "pointer"
+            }}
+          >
+            <span>🚪</span> Chiqish
+          </button>
         </div>
       )}
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0 min-h-screen overflow-y-auto">
-        {children}
+      {/* ══ MAIN CONTENT ══ */}
+      <main style={{ flex: 1, padding: "32px", paddingTop: "86px" }} className="lg:pt-8">
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          {children}
+        </div>
       </main>
+
     </div>
   );
 }
