@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  direction    String        // Yo'nalishi (pedagogika, matematika, va h.k.)
+  avatar       String?
+  xp           Int           @default(0)
+  rank         Rank          @default(EXPLORER)
+  projects     Project[]
+  suggestions  Interaction[] @relation("SuggestionAuthor")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Project {
+  id           String        @id @default(uuid())
+  ownerId      String
+  owner        User          @relation(fields: [ownerId], references: [id])
+  title        String
+  specific     String        @db.Text
+  measurable   String        @db.Text
+  achievable   String        @db.Text
+  relevant     String        @db.Text
+  timeBound    String        @db.Text
+  smartScore   Int?
+  aiFeedback   String?       @db.Text
+  aiSuggestions String?      @db.Text
+  innovScore   Int?          // Innovatsionlik darajasi (%)
+  status       ProjectStatus @default(DRAFT)
+  interactions Interaction[]
+  viewCount    Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Interaction {
+  id             String            @id @default(uuid())
+  projectId      String
+  project        Project           @relation(fields: [projectId], references: [id])
+  userId         String
+  user           User              @relation("SuggestionAuthor", fields: [userId], references: [id])
+  suggestionText String            @db.Text
+  technology     String?           // Taklif qilingan texnologiya
+  status         InteractionStatus @default(PENDING)
+  createdAt      DateTime          @default(now())
+}
+
+enum Rank {
+  EXPLORER
+  SPECIALIST
+  MASTER
+  VISIONARY
+}
+
+enum ProjectStatus {
+  DRAFT
+  BOOMERANGED
+  IN_REVIEW
+  COMPLETED
+}
+
+enum InteractionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
