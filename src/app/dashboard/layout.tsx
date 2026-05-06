@@ -213,24 +213,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* ══ MAIN CONTENT ══ */}
+      {/* Mobile: top=54px (top bar), Desktop: top=32px, sides=32px */}
       <main
         className="dashboard-content"
         style={{
           flex: 1,
           minWidth: 0,
-          paddingTop: "54px",   /* mobile top bar height */
-          paddingLeft: "12px",
-          paddingRight: "12px",
-          paddingBottom: "16px",
+          padding: "32px",
         }}
       >
-        {/* Desktop: more padding */}
         <style>{`
-          @media (min-width: 1024px) {
+          /* Mobile: account for top bar and bottom nav */
+          @media (max-width: 1023px) {
             .dashboard-content {
-              padding-top: 32px !important;
-              padding-left: 32px !important;
-              padding-right: 32px !important;
+              padding: 12px !important;
+              padding-top: 66px !important;
+              padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
             }
           }
         `}</style>

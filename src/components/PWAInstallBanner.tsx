@@ -12,7 +12,10 @@ export default function PWAInstallBanner() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
+    // Only show on mobile/tablet screens
+    if (window.innerWidth >= 1024) return;
+
+    // Check if already installed as standalone
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setInstalled(true);
       return;
