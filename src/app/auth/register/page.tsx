@@ -325,7 +325,7 @@ export default function RegisterPage() {
             }}>A</div>
             <div>
               <p style={{ fontSize: "13px", color: "#d4d4e8", lineHeight: 1.6, marginBottom: "8px" }}>
-                "Jilola orqali dissertatsiyam uchun ajoyib innovatsion g'oya topdim. AI tahlili juda aniq!"
+                "Jilola orqali o'qituvchim bergan vazifa uchun ajoyib innovatsion g'oya topdim. AI tahlili juda aniq!"
               </p>
               <div style={{ fontSize: "12px", fontWeight: 600, color: "#ea4c89" }}>Aziz Karimov</div>
               <div style={{ fontSize: "11px", color: "#6e6d7a" }}>Master's innovator · Visionary rank</div>

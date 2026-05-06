@@ -183,13 +183,13 @@ export default function Home() {
             transition: "opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s",
           }}>
             <h1 className="hero-heading">
-              O'zbekistoning eng<br />
+              O'zbekistonning eng<br />
               yaxshi innovatorlarini<br />
               kashf eting
             </h1>
             <p className="hero-sub">
-              Magistrlik dissertatsiyasi uchun innovatsion g'oyangizni SMART mezonlari
-              bo'yicha shakllantiring, AI tekshirsin, hamkasblar boyitsin.
+              O'qituvchi bergan vazifaga asosan innovatsion g'oyangizni SMART mezonlari bo'yicha shakllantiring.
+              Talabalar bir-birining g'oyasini baholab, fikr bildiradi va o'zaro tajriba almashadi.
             </p>
 
             {/* Type pills */}
@@ -240,11 +240,11 @@ export default function Home() {
       {/* ══ PROJECT BRIEF BANNER ══ */}
       <div className="brief-banner">
         <p className="brief-banner-text">
-          ✨ <strong>G'oya briefini boshlang</strong> — Nima kerakligini ayting va AI darhol eng mos
-          innovatsion yechimlarni tavsiya qilsin.
+          ✨ <strong>G'oyalarni berishni boshlang</strong> — G'oyangizni kiriting va AI yordamida eng mos 
+          innovatsion yechimlarni tavsiya sifatida oling.
         </p>
         <Link href="/auth/register" className="brief-banner-cta">
-          🚀 G'oya Briefini Boshlash
+          🚀 G'oya Kiritishni Boshlash
         </Link>
       </div>
 
@@ -376,8 +376,8 @@ export default function Home() {
           </div>
           <h2 className="cta-heading">Innovatsion g'oyangizni hoziroq yuboring</h2>
           <p className="cta-sub">
-            Magistrlik dissertatsiyangiz uchun eng innovatsion g'oyalarni Jilola
-            platformasi bilan mukammal qiling.
+            O'qituvchi bergan vazifalar bo'yicha eng innovatsion g'oyalaringizni Jilola
+            platformasida mukammal qiling.
           </p>
           <Link href="/auth/register" className="cta-btn">
             🚀 Bepul Ro'yxatdan O'tish
