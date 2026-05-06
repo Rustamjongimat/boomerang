@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
 const SECRET = process.env.NEXTAUTH_SECRET || "jilola-secret";
@@ -24,8 +23,7 @@ export async function POST(req: NextRequest) {
       data: { name, email, password: hashed, direction },
     });
 
-    // JWT token yaratish
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user.id, email: user.email }, SECRET, { expiresIn: "30d" });
 
     const response = NextResponse.json({
       id: user.id,
@@ -36,11 +34,12 @@ export async function POST(req: NextRequest) {
       rank: user.rank,
     });
 
-    (await cookies()).set("sb_token", token, {
+    // Cookie'ni to'g'ridan-to'g'ri response'ga o'rnatish
+    response.cookies.set("sb_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 30, // 30 kun
       path: "/",
     });
 
