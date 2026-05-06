@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const SECRET = process.env.NEXTAUTH_SECRET || "jilola-secret";
 
-const PUBLIC_PATHS = ["/", "/auth/login", "/auth/register"];
+const PUBLIC_PATHS = ["/", "/auth/login", "/auth/register", "/sitemap.xml", "/robots.txt"];
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
