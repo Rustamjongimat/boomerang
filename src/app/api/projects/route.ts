@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { analyzeProject } from "@/lib/ai";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentUser();
@@ -70,7 +72,13 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ projects });
+    return NextResponse.json({ projects }, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      }
+    });
   } catch (error) {
     console.error("Get projects error:", error);
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });

@@ -28,7 +28,7 @@ export default function FeedPage() {
   const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
-    fetch("/api/feed")
+    fetch(`/api/feed?t=${Date.now()}`)
       .then((r) => r.json())
       .then((d) => { setProjects(d.projects ?? []); setLoading(false); })
       .catch(() => setLoading(false));

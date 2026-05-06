@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const user = await getCurrentUser();
@@ -26,7 +28,13 @@ export async function GET() {
     // Hozircha oddiy sort: takliflar soni bo'yicha o'sish tartibida (kam taklifli oldin chiqadi)
     projects.sort((a, b) => (a._count.interactions || 0) - (b._count.interactions || 0));
 
-    return NextResponse.json({ projects });
+    return NextResponse.json({ projects }, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      }
+    });
   } catch (error) {
     console.error("Feed error:", error);
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
