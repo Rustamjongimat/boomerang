@@ -21,21 +21,21 @@ function JilolaIcon({ size = 28, id = "side-b" }: { size?: number; id?: string }
 }
 
 const navItems = [
-  { href: "/dashboard",           icon: "🏠", label: "Dashboard"   },
-  { href: "/dashboard/feed",      icon: "🌐", label: "Lenta"       },
-  { href: "/dashboard/smart",     icon: "🎯", label: "SMART Wizard"},
-  { href: "/dashboard/challenges",icon: "📝", label: "Topshiriqlar"},
-  { href: "/dashboard/projects",  icon: "💡", label: "Loyihalarim" },
-  { href: "/dashboard/profile",   icon: "👤", label: "Profil"      },
-  { href: "/dashboard/admin",     icon: "📊", label: "Admin Panel" },
+  { href: "/dashboard",            icon: "🏠", label: "Dashboard"    },
+  { href: "/dashboard/feed",       icon: "🌐", label: "Lenta"        },
+  { href: "/dashboard/smart",      icon: "🎯", label: "SMART Wizard" },
+  { href: "/dashboard/challenges", icon: "📝", label: "Topshiriqlar" },
+  { href: "/dashboard/projects",   icon: "💡", label: "Loyihalarim"  },
+  { href: "/dashboard/profile",    icon: "👤", label: "Profil"       },
+  { href: "/dashboard/admin",      icon: "📊", label: "Admin Panel"  },
 ];
 
 const mobileNavItems = [
-  { href: "/dashboard",           icon: "🏠", label: "Bosh"      },
-  { href: "/dashboard/feed",      icon: "🌐", label: "Lenta"     },
-  { href: "/dashboard/smart",     icon: "✏️", label: "G'oya"     },
-  { href: "/dashboard/challenges",icon: "📝", label: "Vazifalar" },
-  { href: "/dashboard/profile",   icon: "👤", label: "Profil"    },
+  { href: "/dashboard",            icon: "🏠", label: "Bosh"      },
+  { href: "/dashboard/feed",       icon: "🌐", label: "Lenta"     },
+  { href: "/dashboard/smart",      icon: "✏️", label: "G'oya"     },
+  { href: "/dashboard/challenges", icon: "📝", label: "Vazifalar" },
+  { href: "/dashboard/profile",    icon: "👤", label: "Profil"    },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -54,11 +54,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100dvh", background: "var(--bg-soft)", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-soft)", fontFamily: "Inter, sans-serif" }}>
 
-      {/* ══ SIDEBAR — lg+ only ══ */}
+      {/* ══ RESPONSIVE STYLE BLOCK ══ */}
+      <style>{`
+        /* DESKTOP sidebar */
+        .dash-sidebar { display: flex; }
+        /* DESKTOP: mobile bar + bottom nav hidden */
+        .dash-mobile-header { display: none; }
+        .dash-bottom-nav    { display: none; }
+        /* DESKTOP main padding */
+        .dash-main { padding: 32px; padding-top: 32px; }
+
+        /* MOBILE (< 1024px) */
+        @media (max-width: 1023px) {
+          .dash-sidebar        { display: none; }
+          .dash-mobile-header  { display: flex; }
+          .dash-bottom-nav     { display: flex; }
+          .dash-main {
+            padding: 12px;
+            padding-top: 66px;
+            padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+          }
+        }
+      `}</style>
+
+      {/* ══ SIDEBAR — Desktop only ══ */}
       <aside
-        className="hidden lg:flex"
+        className="dash-sidebar"
         style={{
           width: "240px", background: "#fff", borderRight: "1px solid var(--border)",
           flexDirection: "column", flexShrink: 0,
@@ -66,7 +89,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }}
       >
         {/* Logo */}
-        <div style={{ padding: "18px 16px", borderBottom: "1px solid var(--border)" }}>
+        <div style={{ padding: "20px 16px", borderBottom: "1px solid var(--border)" }}>
           <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
             <JilolaIcon size={26} id="dash-logo" />
             <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1.1rem", color: "var(--dark)", letterSpacing: "-0.02em" }}>
@@ -111,7 +134,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             padding: "9px 10px", borderRadius: "8px",
             fontSize: "13px", fontWeight: 500, color: "#e11d48",
             background: "transparent", border: "none", cursor: "pointer",
-          }}>
+            transition: "background 0.2s",
+          }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#fff1f2")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
             <span>🚪</span> Chiqish
           </button>
         </div>
@@ -119,15 +146,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* ══ MOBILE TOP BAR ══ */}
       <header
-        className="lg:hidden"
+        className="dash-mobile-header"
         style={{
           position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
           background: "#fff", borderBottom: "1px solid var(--border)",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
+          alignItems: "center", justifyContent: "space-between",
           padding: "0 16px", height: "54px",
-          // Safe area for notch
-          paddingLeft: "max(16px, env(safe-area-inset-left))",
-          paddingRight: "max(16px, env(safe-area-inset-right))",
         }}
       >
         <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
@@ -142,28 +166,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             fontSize: "18px", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
-          aria-label="Menyu"
-        >
-          ☰
-        </button>
+        >☰</button>
       </header>
 
-      {/* Mobile drawer overlay */}
+      {/* Mobile Drawer */}
       {sideOpen && (
         <div
-          className="lg:hidden"
           style={{ position: "fixed", inset: 0, zIndex: 150, display: "flex" }}
           onClick={() => setSideOpen(false)}
         >
-          {/* Dark backdrop */}
-          <div style={{ flex: 1, background: "rgba(0,0,0,0.45)", backdropFilter: "blur(2px)" }} />
-          {/* Drawer panel */}
+          <div style={{ flex: 1, background: "rgba(0,0,0,0.45)" }} />
           <div
             style={{
               width: "280px", background: "#fff", height: "100%",
               display: "flex", flexDirection: "column", overflowY: "auto",
               boxShadow: "-4px 0 32px rgba(0,0,0,0.15)",
-              paddingTop: "env(safe-area-inset-top, 0)",
             }}
             onClick={e => e.stopPropagation()}
           >
@@ -174,7 +191,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
               <button onClick={() => setSideOpen(false)} style={{ background: "var(--bg-soft)", border: "none", borderRadius: "6px", width: "32px", height: "32px", fontSize: "16px", cursor: "pointer" }}>✕</button>
             </div>
-
             <nav style={{ flex: 1, padding: "12px", display: "flex", flexDirection: "column", gap: "2px" }}>
               {navItems.map((item) => {
                 const active = isActive(pathname, item.href);
@@ -193,7 +209,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 );
               })}
             </nav>
-
             <div style={{ padding: "16px", borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div style={{ background: "var(--bg-soft)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: "10px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: "4px" }}>Muallif</div>
@@ -213,48 +228,56 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* ══ MAIN CONTENT ══ */}
-      {/* Mobile: top=54px (top bar), Desktop: top=32px, sides=32px */}
-      <main
-        className="dashboard-content"
-        style={{
-          flex: 1,
-          minWidth: 0,
-          padding: "32px",
-        }}
-      >
-        <style>{`
-          /* Mobile: account for top bar and bottom nav */
-          @media (max-width: 1023px) {
-            .dashboard-content {
-              padding: 12px !important;
-              padding-top: 66px !important;
-              padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
-            }
-          }
-        `}</style>
+      <main className="dash-main" style={{ flex: 1, minWidth: 0 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           {children}
         </div>
       </main>
 
       {/* ══ MOBILE BOTTOM NAV ══ */}
-      <nav className="bottom-nav" aria-label="Alt navigatsiya">
+      <nav
+        className="dash-bottom-nav"
+        style={{
+          position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200,
+          background: "#fff", borderTop: "1px solid var(--border)",
+          paddingBottom: "env(safe-area-inset-bottom, 8px)",
+          boxShadow: "0 -4px 24px rgba(0,0,0,0.06)",
+        }}
+      >
         {mobileNavItems.map((item) => {
           const active = isActive(pathname, item.href);
           return (
-            <Link key={item.href} href={item.href} className={active ? "active" : ""}>
-              <span className="bnav-icon">{item.icon}</span>
+            <Link
+              key={item.href}
+              href={item.href}
+              style={{
+                flex: 1, display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", gap: "3px",
+                padding: "8px 4px", fontSize: "10px", fontWeight: 600,
+                color: active ? "var(--pink)" : "var(--text-muted)",
+                textDecoration: "none",
+              }}
+            >
+              <span style={{ fontSize: "22px", lineHeight: 1 }}>{item.icon}</span>
               <span>{item.label}</span>
             </Link>
           );
         })}
-        <button onClick={handleLogout} style={{ color: "#e11d48" }}>
-          <span className="bnav-icon">🚪</span>
+        <button
+          onClick={handleLogout}
+          style={{
+            flex: 1, display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center", gap: "3px",
+            padding: "8px 4px", fontSize: "10px", fontWeight: 600,
+            color: "#e11d48", background: "none", border: "none", cursor: "pointer",
+          }}
+        >
+          <span style={{ fontSize: "22px", lineHeight: 1 }}>🚪</span>
           <span>Chiqish</span>
         </button>
       </nav>
 
-      {/* PWA Install Banner */}
+      {/* PWA Install Banner — mobile only */}
       <PWAInstallBanner />
 
     </div>
