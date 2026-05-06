@@ -36,7 +36,7 @@ export default function FeedPage() {
 
   const handleSuggest = async () => {
     if (!selected) return;
-    if (suggestion.length < 50) { toast.error("Kamida 50 ta belgi yozing"); return; }
+    if (suggestion.trim().length === 0) { toast.error("Taklifni kiriting"); return; }
     setSubmitting(true);
     try {
       const res = await fetch(`/api/projects/${selected.id}/suggest`, {
@@ -245,7 +245,7 @@ export default function FeedPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
               <div>
                 <label style={{ display: "block", fontSize: "13px", fontWeight: 700, color: "var(--dark)", marginBottom: "8px" }}>
-                  Taklif matni (kamida 50 belgi)
+                  Taklif matni
                 </label>
                 <textarea
                   placeholder="Bu loyihani qanday boyitish mumkin?..."

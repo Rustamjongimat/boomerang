@@ -66,16 +66,15 @@ const STEPS = [
   },
 ];
 
-function CharCounter({ text, min = 100 }: { text: string; min?: number }) {
+function CharCounter({ text }: { text: string }) {
   const count = text.length;
-  const ok = count >= min;
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "12px" }}>
-      <span style={{ fontSize: "12px", color: ok ? "#00b37e" : "var(--text-muted)", fontWeight: 500 }}>
-        {ok ? "✅ Minimal talab bajarildi" : `⚠️ Kamida ${min} belgi yozing (${min - count} ta qoldi)`}
+      <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
+        Belgilar soni
       </span>
-      <span style={{ fontSize: "12px", fontWeight: 600, color: ok ? "#00b37e" : "var(--text-muted)" }}>
-        {count}/{min}
+      <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)" }}>
+        {count}
       </span>
     </div>
   );
@@ -103,14 +102,14 @@ export default function SmartWizardPage() {
 
   const current = STEPS[step];
   const currentVal = values[current.key] ?? "";
-  const isValid = currentVal.length >= 100;
+  const isValid = currentVal.trim().length > 0;
   const isLast = step === STEPS.length - 1;
-  const allValid = Object.values(values).every((v) => v.length >= 100) && title.length >= 5;
+  const allValid = Object.values(values).every((v) => v.trim().length > 0) && title.trim().length > 0;
 
   const setVal = (v: string) => setValues((prev) => ({ ...prev, [current.key]: v }));
 
   const handleNext = () => {
-    if (!isValid) { toast.error("Kamida 100 ta belgi yozing!"); return; }
+    if (!isValid) { toast.error("Iltimos, maydonni to'ldiring!"); return; }
     if (step < STEPS.length - 1) setStep((s) => s + 1);
   };
 
@@ -155,7 +154,7 @@ export default function SmartWizardPage() {
           Innovatsion G'oyangizni Shakllantiring
         </h1>
         <p style={{ fontSize: "14px", color: "var(--text-light)" }}>
-          Har bir qadamda kamida 100 ta belgi yozing. Bu sizni chuqurroq o'ylashga undaydi.
+          Har bir qadamni batafsil to'ldirib, g'oyangizni mukammal qiling.
         </p>
       </div>
 
