@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const data = await req.json();
-    const { title, specific, measurable, achievable, relevant, timeBound } = data;
+    const { title, specific, measurable, achievable, relevant, timeBound, challengeId } = data;
 
     if (!title || !specific || !measurable || !achievable || !relevant || !timeBound) {
       return NextResponse.json({ error: "Barcha SMART maydonlari to'ldirilishi shart" }, { status: 400 });
@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         achievable,
         relevant,
         timeBound,
+        challengeId: challengeId || null,
         ownerId: user.id,
         innovScore: aiResult.innovScore,
         aiFeedback: aiResult.feedback,

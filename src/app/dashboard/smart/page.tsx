@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
 const STEPS = [
@@ -90,8 +90,10 @@ const Card = ({ children, style }: { children: React.ReactNode; style?: React.CS
   </div>
 );
 
-export default function SmartWizardPage() {
+function WizardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const challengeId = searchParams.get("challengeId");
   const [step, setStep] = useState(0);
   const [title, setTitle] = useState("");
   const [values, setValues] = useState<Record<string, string>>({
@@ -122,7 +124,7 @@ export default function SmartWizardPage() {
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, ...values }),
+        body: JSON.stringify({ title, ...values, challengeId }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -142,6 +144,15 @@ export default function SmartWizardPage() {
     <div style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "40px" }}>
       
       {/* ══ HEADER ══ */}
+      {challengeId && (
+        <div style={{ background: "#fef9ee", border: "1px solid #fef08a", padding: "12px 16px", borderRadius: "8px", marginBottom: "24px", display: "flex", gap: "12px", alignItems: "center" }}>
+          <span style={{ fontSize: "24px" }}>📝</span>
+          <div>
+            <div style={{ fontSize: "12px", fontWeight: 700, color: "#d97706", textTransform: "uppercase", marginBottom: "4px" }}>Topshiriq biriktirilgan</div>
+            <div style={{ fontSize: "14px", color: "var(--dark)" }}>Siz maxsus topshiriq uchun g'oya kiritmoqdasiz.</div>
+          </div>
+        </div>
+      )}
       <div style={{ marginBottom: "32px" }}>
         <div style={{
           display: "inline-block", background: "var(--bg-dark)", color: "#fff",
@@ -340,5 +351,13 @@ export default function SmartWizardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SmartWizardPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: "center", padding: "40px" }}>Yuklanmoqda...</div>}>
+      <WizardContent />
+    </Suspense>
   );
 }

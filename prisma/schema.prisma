@@ -16,15 +16,28 @@ model User {
   xp           Int           @default(0)
   rank         Rank          @default(EXPLORER)
   projects     Project[]
+  challenges   Challenge[]   @relation("ChallengeAuthor")
   suggestions  Interaction[] @relation("SuggestionAuthor")
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+}
+
+model Challenge {
+  id          String    @id @default(uuid())
+  title       String
+  description String    @db.Text
+  authorId    String
+  author      User      @relation("ChallengeAuthor", fields: [authorId], references: [id])
+  projects    Project[]
+  createdAt   DateTime  @default(now())
 }
 
 model Project {
   id           String        @id @default(uuid())
   ownerId      String
   owner        User          @relation(fields: [ownerId], references: [id])
+  challengeId  String?
+  challenge    Challenge?    @relation(fields: [challengeId], references: [id])
   title        String
   specific     String        @db.Text
   measurable   String        @db.Text

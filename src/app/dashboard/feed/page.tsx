@@ -6,6 +6,10 @@ interface Project {
   id: string;
   title: string;
   specific: string;
+  measurable: string;
+  achievable: string;
+  relevant: string;
+  timeBound: string;
   status: string;
   innovScore: number | null;
   viewCount: number;
@@ -180,13 +184,24 @@ export default function FeedPage() {
                 <div style={{ flexShrink: 0 }}>{getScoreBadge(p.innovScore)}</div>
               </div>
 
-              {/* Title & specific text */}
-              <h3 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "8px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+              {/* Title & SMART fields */}
+              <h3 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "16px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                 {p.title}
               </h3>
-              <p style={{ fontSize: "13px", color: "var(--text-light)", lineHeight: 1.6, flex: 1, marginBottom: "20px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                {p.specific}
-              </p>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
+                {[
+                  { label: "S - Aniq", content: p.specific, color: "#0d6efd", bg: "#e8f0fe" },
+                  { label: "M - O'lchanadigan", content: p.measurable, color: "#00b37e", bg: "#e6f8f3" },
+                  { label: "A - Erishib bo'ladigan", content: p.achievable, color: "#d97706", bg: "#fef9ee" },
+                  { label: "R - Dolzarb", content: p.relevant, color: "#7c3aed", bg: "#ede9fe" },
+                  { label: "T - Muddatli", content: p.timeBound, color: "#ea4c89", bg: "#fce4ec" },
+                ].map(s => (
+                  <div key={s.label} style={{ background: s.bg, padding: "10px", borderRadius: "8px", borderLeft: `3px solid ${s.color}` }}>
+                    <div style={{ fontSize: "11px", fontWeight: 700, color: s.color, marginBottom: "4px", textTransform: "uppercase" }}>{s.label}</div>
+                    <div style={{ fontSize: "13px", color: "var(--dark)", lineHeight: 1.5 }}>{s.content}</div>
+                  </div>
+                ))}
+              </div>
 
               {/* Footer */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "16px", borderTop: "1px solid var(--border)" }}>

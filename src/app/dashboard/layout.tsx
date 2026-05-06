@@ -22,6 +22,7 @@ const navItems = [
   { href: "/dashboard/projects", icon: "💡", label: "Loyihalar"     },
   { href: "/dashboard/feed",     icon: "🌐", label: "Lenta"         },
   { href: "/dashboard/smart",    icon: "🎯", label: "SMART Wizard"  },
+  { href: "/dashboard/challenges", icon: "📝", label: "Topshiriqlar" },
   { href: "/dashboard/profile",  icon: "👤", label: "Profil"        },
   { href: "/dashboard/admin",    icon: "📊", label: "Admin Panel"   },
 ];
