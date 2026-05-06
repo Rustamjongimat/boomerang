@@ -91,7 +91,10 @@ export default function ChallengesPage() {
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "24px" }}>
           {challenges.map(c => (
-            <div key={c.id} style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column" }}>
+            <div key={c.id} style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column", cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s" }}
+                 onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.06)"; }}
+                 onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                 onClick={() => router.push(`/dashboard/challenges/${c.id}`)}>
               <div style={{ fontSize: "12px", color: "var(--text-light)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
                 <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#e8f0fe", color: "#0d6efd", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800 }}>
                   {c.author.name.charAt(0)}
@@ -109,7 +112,7 @@ export default function ChallengesPage() {
                   💡 {c._count?.projects || 0} ta g'oya
                 </div>
                 <button
-                  onClick={() => router.push(`/dashboard/smart?challengeId=${c.id}`)}
+                  onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/smart?challengeId=${c.id}`); }}
                   style={{ background: "#e8f0fe", color: "#0d6efd", border: "none", borderRadius: "6px", padding: "6px 14px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}
                 >
                   G'oya yozish →
