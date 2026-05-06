@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-function BoomerangIcon({ size = 64, id = "lb" }: { size?: number; id?: string }) {
+function JilolaIcon({ size = 64, id = "lb" }: { size?: number; id?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
       <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill={`url(#${id})`} />
@@ -90,17 +90,17 @@ export default function LoginPage() {
           display: "flex", alignItems: "center", gap: "10px",
           textDecoration: "none", marginBottom: "40px",
         }}>
-          <BoomerangIcon size={36} id="logo-l" />
+          <JilolaIcon size={36} id="logo-l" />
           <span style={{
             fontFamily: "Outfit, sans-serif", fontWeight: 900,
             fontSize: "1.1rem", color: "#0d0d0d", letterSpacing: "-0.03em",
-          }}>Smart-Boomerang</span>
+          }}>Jilola</span>
         </Link>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "28px", width: "100%" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-            <BoomerangIcon size={56} id="head-l" />
+            <JilolaIcon size={56} id="head-l" />
           </div>
           <h1 style={{
             fontFamily: "Outfit, sans-serif", fontSize: "1.6rem",

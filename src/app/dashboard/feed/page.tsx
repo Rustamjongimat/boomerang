@@ -86,7 +86,7 @@ export default function FeedPage() {
           padding: "4px 12px", borderRadius: "6px", fontSize: "11px", fontWeight: 700,
           textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "12px"
         }}>
-          🌐 Bumerang Lentasi
+          🌐 Jilola Lentasi
         </div>
         <h1 style={{ fontFamily: "Outfit, sans-serif", fontSize: "2rem", fontWeight: 900, color: "var(--dark)", marginBottom: "8px", letterSpacing: "-0.03em" }}>
           Hamkasblaringiz G'oyalarini <span style={{ color: "var(--pink)" }}>Boyiting</span>

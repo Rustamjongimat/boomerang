@@ -10,7 +10,7 @@ const DIRECTIONS = [
   "Geografiya", "Huquq", "Iqtisodiyot", "Psixologiya", "Boshqa",
 ];
 
-function BoomerangIcon({ size = 64, id = "rb" }: { size?: number; id?: string }) {
+function JilolaIcon({ size = 64, id = "rb" }: { size?: number; id?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
       <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill={`url(#${id})`} />
@@ -88,17 +88,17 @@ export default function RegisterPage() {
           display: "flex", alignItems: "center", gap: "10px",
           textDecoration: "none", marginBottom: "40px",
         }}>
-          <BoomerangIcon size={36} id="logo-r" />
+          <JilolaIcon size={36} id="logo-r" />
           <span style={{
             fontFamily: "Outfit, sans-serif", fontWeight: 900,
             fontSize: "1.1rem", color: "#0d0d0d", letterSpacing: "-0.03em",
-          }}>Smart-Boomerang</span>
+          }}>Jilola</span>
         </Link>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "28px", width: "100%" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-            <BoomerangIcon size={56} id="head-r" />
+            <JilolaIcon size={56} id="head-r" />
           </div>
           <h1 style={{
             fontFamily: "Outfit, sans-serif", fontSize: "1.6rem",
@@ -106,7 +106,7 @@ export default function RegisterPage() {
             marginBottom: "8px",
           }}>Platforma a'zosi bo'ling</h1>
           <p style={{ fontSize: "14px", color: "#6e6d7a", lineHeight: 1.5 }}>
-            Innovatsion g'oyalaringizni Smart-Boomerang orqali ulashing.
+            Innovatsion g'oyalaringizni Jilola orqali ulashing.
           </p>
         </div>
 
@@ -263,7 +263,7 @@ export default function RegisterPage() {
         {/* Header */}
         <div style={{ marginBottom: "48px" }}>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#ea4c89", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "16px" }}>
-            🚀 Smart-Boomerang Platforma
+            🚀 Jilola Platforma
           </div>
           <h2 style={{
             fontFamily: "Outfit, sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
@@ -271,7 +271,7 @@ export default function RegisterPage() {
             marginBottom: "16px",
           }}>
             Innovatsion g'oyangizni<br />
-            <span style={{ color: "#ea4c89" }}>bumerang</span> kabi<br />
+            <span style={{ color: "#ea4c89" }}>jilola</span> kabi<br />
             qaytarib oling
           </h2>
           <p style={{ fontSize: "14px", color: "#9e9eb0", lineHeight: 1.7, maxWidth: "380px" }}>
@@ -325,7 +325,7 @@ export default function RegisterPage() {
             }}>A</div>
             <div>
               <p style={{ fontSize: "13px", color: "#d4d4e8", lineHeight: 1.6, marginBottom: "8px" }}>
-                "Smart-Boomerang orqali dissertatsiyam uchun ajoyib innovatsion g'oya topdim. AI tahlili juda aniq!"
+                "Jilola orqali dissertatsiyam uchun ajoyib innovatsion g'oya topdim. AI tahlili juda aniq!"
               </p>
               <div style={{ fontSize: "12px", fontWeight: 600, color: "#ea4c89" }}>Aziz Karimov</div>
               <div style={{ fontSize: "11px", color: "#6e6d7a" }}>Master's innovator · Visionary rank</div>

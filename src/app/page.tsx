@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 /* ─── Boomerang SVG ─── */
-function BoomerangIcon({ w = 36, h = 36, id = "b0" }: { w?: number; h?: number; id?: string }) {
+function JilolaIcon({ w = 36, h = 36, id = "b0" }: { w?: number; h?: number; id?: string }) {
   return (
     <svg width={w} height={h} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill={`url(#${id})`} />
@@ -74,7 +74,7 @@ function ShotCard({ icon, title, desc, bg, user, userColor, likes, views, delay 
 }
 
 export default function Home() {
-  const boomerangRef = useRef<HTMLDivElement>(null);
+  const jilolaRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [activeType, setActiveType] = useState("g'oyalar");
   const [activeFilter, setActiveFilter] = useState("discover");
@@ -83,7 +83,7 @@ export default function Home() {
 
   // Floating boomerang animation
   useEffect(() => {
-    const el = boomerangRef.current; if (!el) return;
+    const el = jilolaRef.current; if (!el) return;
     let t = 0;
     const loop = () => {
       t += 0.008;
@@ -97,7 +97,7 @@ export default function Home() {
   const shots = [
     { icon: "🎯", title: "SMART-Wizard — 5 qadamli g'oya shakllantirish", desc: "Innovatsion g'oyangizni SMART mezonlari bo'yicha shakllantiring", bg: "linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%)", user: "SMART modul", userColor: "#ea4c89", likes: "2.4k", views: "18.2k" },
     { icon: "🤖", title: "AI-Tahlil — Innovatsionlik darajasi", desc: "Sun'iy intellekt g'oyangizni tekshirib, foizda baholaydi", bg: "linear-gradient(135deg, #e8f0fe 0%, #c3d8ff 100%)", user: "AI Engine", userColor: "#0d6efd", likes: "1.8k", views: "14.5k" },
-    { icon: "🌐", title: "P2P Tarmoq — Bumerang effekti", desc: "G'oyangiz 3+ hamkasbga uchirib, boyitib qaytadi", bg: "linear-gradient(135deg, #e6f8f3 0%, #b6eee0 100%)", user: "Peer Network", userColor: "#00b37e", likes: "3.1k", views: "21.0k" },
+    { icon: "🌐", title: "P2P Tarmoq — Sayqallangan qaytim", desc: "G'oyangiz 3+ hamkasbga uchirib, boyitib qaytadi", bg: "linear-gradient(135deg, #e6f8f3 0%, #b6eee0 100%)", user: "Peer Network", userColor: "#00b37e", likes: "3.1k", views: "21.0k" },
     { icon: "🏆", title: "Gamification — XP va Rank tizimi", desc: "Faollik uchun XP ballar to'plab, yangi darajaga yuksaling", bg: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", user: "Rank System", userColor: "#7c3aed", likes: "1.2k", views: "9.8k" },
     { icon: "💎", title: "G'oya Boyitish — Kollektiv aql", desc: "Hamkasblar taklif beradi, AI jamlab, natija qaytaradi", bg: "linear-gradient(135deg, #fef9ee 0%, #fde68a 100%)", user: "Collab AI", userColor: "#d97706", likes: "876", views: "7.3k" },
     { icon: "📊", title: "Admin Panel — Real-time statistika", desc: "Loyihalar va innovatsiya tahlilini kuzatib boring", bg: "linear-gradient(135deg, #fce4ec 0%, #ede9fe 100%)", user: "Analytics", userColor: "#ea4c89", likes: "654", views: "5.9k" },
@@ -130,7 +130,7 @@ export default function Home() {
     <>
       {/* ══ ANNOUNCEMENT BAR ══ */}
       <div className="announce-bar">
-        <span>🚀 Magistrlik dissertatsiyasi uchun eng zamonaviy platforma — Smart-Boomerang ishga tushdi!</span>
+        <span>🚀 Magistrlik dissertatsiyasi uchun eng zamonaviy platforma — Jilola ishga tushdi!</span>
         <a href="/auth/register">Boshlash ↗</a>
       </div>
 
@@ -139,9 +139,9 @@ export default function Home() {
         {/* Logo */}
         <Link href="/" className="nav-logo">
           <div className="nav-logo-icon anim-spin">
-            <BoomerangIcon w={36} h={36} id="nav-b" />
+            <JilolaIcon w={36} h={36} id="nav-b" />
           </div>
-          <span className="nav-logo-text" style={{ display: "none" }} id="logo-text">Smart-Boomerang</span>
+          <span className="nav-logo-text" style={{ display: "none" }} id="logo-text">Jilola</span>
           <style>{`@media(min-width:640px){#logo-text{display:block}}`}</style>
         </Link>
 
@@ -226,8 +226,8 @@ export default function Home() {
             opacity: mounted ? 1 : 0,
             transition: "opacity 1.1s ease 0.3s",
           }}>
-            <div className="hero-media-inner" ref={boomerangRef}>
-              <BoomerangIcon w={180} h={180} id="hero-b" />
+            <div className="hero-media-inner" ref={jilolaRef}>
+              <JilolaIcon w={180} h={180} id="hero-b" />
             </div>
             <div className="hero-media-badge">
               <div className="hero-media-badge-avatar">AI</div>
@@ -279,7 +279,7 @@ export default function Home() {
           {[
             { n: "01", icon: "✍️", title: "G'oya kiriting", desc: "SMART-Wizard orqali 5 qadamda innovatsion g'oyangizni shakllantiring", c: "#ea4c89" },
             { n: "02", icon: "🤖", title: "AI tekshiradi", desc: "Sun'iy intellekt innovatsionlik darajasini (%) aniqlab beradi", c: "#0d6efd" },
-            { n: "03", icon: "🌐", title: "Tarmoqqa yuboriladi", desc: "G'oya kamida 3 ta talabaga 'bumerang' kabi uchirib yuboriladi", c: "#00b37e" },
+            { n: "03", icon: "🌐", title: "Tarmoqqa yuboriladi", desc: "G'oya kamida 3 ta talabaga platforma filtrlaridan o'tib, yangi jilo bilan qaytariladi", c: "#00b37e" },
             { n: "04", icon: "💎", title: "Boyitib qaytadi", desc: "Hamkasblar taklif beradi, AI jamlab, mukammal g'oya qaytaradi", c: "#7c3aed" },
           ].map((s, i) => {
             const ref = useReveal(i * 80);
@@ -372,11 +372,11 @@ export default function Home() {
       <section className="cta-section">
         <div ref={useReveal()} className="reveal">
           <div style={{ marginBottom: "20px" }}>
-            <BoomerangIcon w={60} h={60} id="cta-b" />
+            <JilolaIcon w={60} h={60} id="cta-b" />
           </div>
           <h2 className="cta-heading">Innovatsion g'oyangizni hoziroq yuboring</h2>
           <p className="cta-sub">
-            Magistrlik dissertatsiyangiz uchun eng innovatsion g'oyalarni Smart-Boomerang
+            Magistrlik dissertatsiyangiz uchun eng innovatsion g'oyalarni Jilola
             platformasi bilan mukammal qiling.
           </p>
           <Link href="/auth/register" className="cta-btn">
@@ -388,12 +388,12 @@ export default function Home() {
       {/* ══ FOOTER ══ */}
       <footer className="site-footer">
         <div className="footer-brand">
-          <BoomerangIcon w={28} h={28} id="footer-b" />
+          <JilolaIcon w={28} h={28} id="footer-b" />
           <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1rem", color: "var(--dark)" }}>
-            Smart-Boomerang
+            Jilola
           </span>
         </div>
-        <p className="footer-copy">© 2024 Smart-Boomerang — Muallif: Primova Durdona G'ulomjon qizi</p>
+        <p className="footer-copy">© 2024 Jilola — Muallif: Primova Durdona G'ulomjon qizi</p>
         <div style={{ display: "flex", gap: "16px" }}>
           <Link href="/auth/register" className="btn-signup" style={{ fontSize: "13px" }}>Ro'yxatdan o'tish</Link>
           <Link href="/auth/login" className="btn-login" style={{ fontSize: "13px", padding: "8px 16px" }}>Kirish</Link>

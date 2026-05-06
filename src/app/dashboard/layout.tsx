@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
-function BoomerangIcon({ size = 32, id = "side-b" }: { size?: number; id?: string }) {
+function JilolaIcon({ size = 32, id = "side-b" }: { size?: number; id?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
       <path d="M20 80 Q50 20 80 20 Q65 50 35 65 Q20 70 20 80Z" fill={`url(#${id})`} />
@@ -55,9 +55,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div style={{ padding: "24px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "10px" }}>
           <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-            <BoomerangIcon size={28} id="dash-logo" />
+            <JilolaIcon size={28} id="dash-logo" />
             <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "1.1rem", color: "var(--dark)", letterSpacing: "-0.02em" }}>
-              Smart-Boomerang
+              Jilola
             </span>
           </Link>
         </div>
@@ -130,8 +130,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         padding: "12px 20px"
       }}>
         <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
-          <BoomerangIcon size={24} id="mob-logo" />
-          <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, color: "var(--dark)" }}>Smart-B</span>
+          <JilolaIcon size={24} id="mob-logo" />
+          <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, color: "var(--dark)" }}>Jilola</span>
         </Link>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}

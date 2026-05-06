@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
-const SECRET = process.env.NEXTAUTH_SECRET || "smart-boomerang-secret";
+const SECRET = process.env.NEXTAUTH_SECRET || "jilola-secret";
 
 export async function POST(req: NextRequest) {
   try {

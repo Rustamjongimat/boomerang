@@ -3,13 +3,13 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Smart-Boomerang | Innovatsion G'oyalar Platformasi",
+  title: "Jilola | Innovatsion G'oyalar Platformasi",
   description:
     "Magistrlik dissertatsiyasi doirasida talabalarning innovatsion faoliyatini rivojlantiradigan interaktiv platforma. SMART mezonlari asosida g'oyalarni tekshiring, AI tahlil qilsin va hamjamiyatdan boyiting.",
   keywords: "innovatsiya, SMART, ta'lim, dissertatsiya, pedagogika, AI, talabalar",
-  authors: [{ name: "Smart-Boomerang Team" }],
+  authors: [{ name: "Jilola Team" }],
   openGraph: {
-    title: "Smart-Boomerang",
+    title: "Jilola",
     description: "Talabalar innovatsion g'oyalar platformasi",
     type: "website",
   },

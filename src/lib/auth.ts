@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 
-const SECRET = process.env.NEXTAUTH_SECRET || "smart-boomerang-secret";
+const SECRET = process.env.NEXTAUTH_SECRET || "jilola-secret";
 
 export async function getCurrentUser() {
   try {

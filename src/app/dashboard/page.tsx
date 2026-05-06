@@ -31,7 +31,7 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string }> 
   COMPLETED:    { label: "Yakunlangan ✅", color: "#00b37e", bg: "#e6f8f3" },
 };
 
-function BoomerangLoader() {
+function JilolaLoader() {
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
       <svg width="48" height="48" viewBox="0 0 100 100" fill="none" style={{ animation: "spin 2s linear infinite" }}>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <BoomerangLoader />;
+  if (loading) return <JilolaLoader />;
 
   // Demo fallback
   const user = data?.user ?? { name: "Talaba", xp: 45, rank: "EXPLORER", direction: "Pedagogika" };

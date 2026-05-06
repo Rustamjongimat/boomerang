@@ -104,7 +104,7 @@ export default function ProjectDetailPage() {
                 color: isBoomeranged ? "#0d6efd" : isInReview ? "#d97706" : isCompleted ? "#00b37e" : "#6e6d7a",
                 padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px"
               }}>
-                {isBoomeranged ? "🚀 Tarmoqda aylanmoqda" : isInReview ? "🔍 Ko'rib chiqilmoqda" : isCompleted ? "✅ Yakunlangan" : "📝 Qoralama"}
+                {isBoomeranged ? "🚀 Jilolanmoqda" : isInReview ? "🔍 Ko'rib chiqilmoqda" : isCompleted ? "✅ Yakunlangan" : "📝 Qoralama"}
               </span>
               <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
                 👁 {project.viewCount} marta ko'rilgan
@@ -214,14 +214,14 @@ export default function ProjectDetailPage() {
           
           <Card>
             <h2 style={{ fontFamily: "Outfit, sans-serif", fontSize: "1.1rem", fontWeight: 800, color: "var(--dark)", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>🌐</span> Bumerang Yo'nalishi
+              <span>🌐</span> Jilola Yo'nalishi
             </h2>
             <div style={{ position: "relative", paddingLeft: "12px" }}>
               <div style={{ position: "absolute", left: "23px", top: "12px", bottom: "12px", width: "2px", background: "var(--border)" }} />
               
               {[
                 { label: "G'oya kiritildi", sub: "AI birlamchi baholadi", active: true, color: "#0d6efd" },
-                { label: "Tarmoqqa uzatildi", sub: `${project.interactions.length}/3 taklif yig'ildi`, active: isBoomeranged || isInReview || isCompleted, color: "#00b37e" },
+                { label: "Jilolash tarmog'iga uzatildi", sub: `${project.interactions.length}/3 taklif yig'ildi`, active: isBoomeranged || isInReview || isCompleted, color: "#00b37e" },
                 { label: "Ko'rib chiqilmoqda", sub: "Takliflarni tasdiqlash", active: isInReview || isCompleted, color: "#d97706" },
                 { label: "G'oya mukammal", sub: "Yakuniy AI tahlili", active: isCompleted, color: "#ea4c89" },
               ].map((step, idx) => (

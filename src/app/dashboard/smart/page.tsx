@@ -301,7 +301,7 @@ export default function SmartWizardPage() {
                     <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
                     Yuborilmoqda...
                   </>
-                ) : "🚀 Bumerangni Yuborish!"}
+                ) : "🚀 Jilolashga yuborish!"}
               </button>
             )}
           </div>
