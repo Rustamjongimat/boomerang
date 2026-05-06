@@ -158,11 +158,11 @@ export default function ProjectDetailPage() {
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               {[
-                { label: "Specific", content: project.specific, color: "#0d6efd", bg: "#e8f0fe" },
-                { label: "Measurable", content: project.measurable, color: "#00b37e", bg: "#e6f8f3" },
-                { label: "Achievable", content: project.achievable, color: "#d97706", bg: "#fef9ee" },
-                { label: "Relevant", content: project.relevant, color: "#7c3aed", bg: "#ede9fe" },
-                { label: "Time-bound", content: project.timeBound, color: "#ea4c89", bg: "#fce4ec" },
+                { label: "Aniq (Specific)", content: project.specific, color: "#0d6efd", bg: "#e8f0fe" },
+                { label: "O'lchanadigan (Measurable)", content: project.measurable, color: "#00b37e", bg: "#e6f8f3" },
+                { label: "Erishib bo'ladigan (Achievable)", content: project.achievable, color: "#d97706", bg: "#fef9ee" },
+                { label: "Dolzarb (Relevant)", content: project.relevant, color: "#7c3aed", bg: "#ede9fe" },
+                { label: "Muddatli (Time-bound)", content: project.timeBound, color: "#ea4c89", bg: "#fce4ec" },
               ].map((s) => (
                 <div key={s.label} style={{
                   paddingLeft: "16px", borderLeft: `3px solid ${s.color}`, position: "relative"
